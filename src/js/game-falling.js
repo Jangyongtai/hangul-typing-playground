@@ -50,11 +50,11 @@ HT.Views.game = function (kind) {
   function resize() {
     var cssW = HT.$('#gv-frame').clientWidth || 800, narrow = HT.layout !== 'pc' && cssW < 600;
     W = narrow ? 480 : 800; FS = narrow ? 30 : 34;
-    var cssH = narrow ? Math.min(cssW * 1.0, innerHeight * 0.46) : HT.layout === 'pc' ? HT.clamp(innerHeight - 500, 320, cssW * 0.48) : Math.min(cssW * 0.56, innerHeight * 0.56);
+    var cssH = narrow ? Math.min(cssW * 1.0, innerHeight * 0.46) : HT.layout === 'pc' ? 372 : Math.min(cssW * 0.56, innerHeight * 0.56);
     cssH = Math.max(cssH, 230);
     H = Math.round(W * cssH / cssW);
     canvas.style.height = cssH + 'px';
-    var dpr = Math.min(2, devicePixelRatio || 1);
+    var dpr = Math.min(3, (devicePixelRatio || 1) * (HT.layout === 'pc' ? Math.max(1, HT.stageScale) : 1));
     canvas.width = Math.round(cssW * dpr); canvas.height = Math.round(cssH * dpr);
     ctx.setTransform(canvas.width / W, 0, 0, canvas.width / W, 0, 0);
     stars = []; for (var i = 0; i < 60; i++) stars.push({ x: Math.random() * W, y: Math.random() * H * 0.8, r: Math.random() < 0.2 ? 3 : 2, sp: HT.rand(0.5, 2), ph: Math.random() * 6 });
@@ -300,8 +300,8 @@ HT.Views.game = function (kind) {
   function startMenu() {
     var ov = HT.$('#ov-start');
     ov.innerHTML = '<div class="ov-box"><h3>' + HT.esc(HT.t(kind)) + '</h3><p>' + HT.esc(HT.t(kind + 'Desc')) + '</p>' +
-      '<p class="lbl">' + HT.esc(HT.t('content')) + '</p>' + HT.segmented('sg-content', [['jamo', HT.t('cJamo')], ['syl', HT.t('cSyl')], ['word', HT.t('cWord')]], cfg.content) +
-      '<p class="lbl">' + HT.esc(HT.t('speedSel')) + '</p>' + HT.segmented('sg-speed', [['slow', HT.t('slow')], ['normal', HT.t('normal')], ['fast', HT.t('fast')]], cfg.speed) +
+      '<div class="opt-row"><div class="opt"><p class="lbl">' + HT.esc(HT.t('content')) + '</p>' + HT.segmented('sg-content', [['jamo', HT.t('cJamo')], ['syl', HT.t('cSyl')], ['word', HT.t('cWord')]], cfg.content) + '</div>' +
+      '<div class="opt"><p class="lbl">' + HT.esc(HT.t('speedSel')) + '</p>' + HT.segmented('sg-speed', [['slow', HT.t('slow')], ['normal', HT.t('normal')], ['fast', HT.t('fast')]], cfg.speed) + '</div></div>' +
       '<p class="best">🏆 ' + HT.esc(HT.t('bestLbl')) + ' ' + (P.best[kind] || 0) + '</p>' +
       '<button type="button" class="btn primary big" id="gv-start">' + HT.esc(HT.t('start')) + '</button></div>';
     HT.bindSegmented(ov, 'sg-content', function (v) { cfg.content = v; saveCfg(); });
@@ -340,7 +340,7 @@ HT.Views.game = function (kind) {
       '<div class="statbar"><div class="stat"><small>' + HT.esc(HT.t('score')) + '</small><b>' + G.score + '</b></div>' +
       '<div class="stat"><small>' + HT.esc(HT.t('level')) + '</small><b>' + G.level + '</b></div>' +
       '<div class="stat"><small>' + HT.esc(HT.t('maxCombo')) + '</small><b>' + G.maxCombo + '</b></div></div>' +
-      (G.caught.length ? '<p class="lbl">' + HT.esc(HT.t('caught')) + '</p><div class="chips">' + G.caught.map(function (w) {
+      (G.caught.length ? '<p class="lbl">' + HT.esc(HT.t('caught')) + '</p><div class="chips">' + G.caught.slice(-12).map(function (w) {
         var it = HT.WORD_INDEX[w];
         return '<button type="button" class="chip" data-say="' + HT.esc(it ? w : (HT.JINFO[w] ? HT.JINFO[w][0] : w)) + '">' + (it ? it.emoji + ' ' : '') + HT.esc(w) + (it ? ' <small>' + HT.esc(it.en) + '</small>' : '') + '</button>';
       }).join('') + '</div>' : '') +

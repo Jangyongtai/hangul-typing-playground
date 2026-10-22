@@ -505,6 +505,122 @@ h2, h3, .logo, .btn, .lbl, .bubble, .mc-t, .stat b, .meter b, .hud-i b, .seg-b, 
 .pc .side-av { width: 150px; height: 150px; font-size: 92px; }
 .pc .gv .hintline { margin: 10px 0; }
 
+/* ================= PC 무대: 1600×900 고정, 스크롤 없음 ================= */
+.pc, .pc body { height: 100%; overflow: hidden; }
+.pc body { min-width: 0; }
+.pc .wrap {
+  position: absolute; left: 50%; top: 50%; width: 1600px; height: 900px; max-width: none; margin: 0;
+  transform: translate(-50%, -50%) scale(var(--stage-scale, 1)); transform-origin: center center;
+  padding: 22px 26px; grid-template-rows: 100%; overflow: hidden;
+}
+.pc .side { position: static; height: 100%; max-height: none; overflow: hidden; gap: 14px; }
+.pc #view { height: 100%; overflow: hidden; min-height: 0; }
+.pc .side-me { padding: 16px 16px 14px; }
+.pc .side-av { width: 128px; height: 128px; font-size: 80px; margin-bottom: 8px; }
+.pc .side-name { font-size: 24px; }
+.pc .side-nav { flex: 1; min-height: 0; justify-content: space-between; }
+
+/* 처음 화면 */
+.pc .v-home .statbar { gap: 16px; }
+.pc .v-home .stat { padding: 10px 14px; }
+.pc .v-home .stat b { font-size: 26px; }
+.pc h2.sec { margin: 18px 0 12px; font-size: 20px; padding: 4px 20px 5px; }
+.pc .v-home .mode-card { min-height: 0; padding: 16px 20px 18px; }
+.pc .v-home .glyph { min-width: 68px; height: 68px; font-size: 38px; margin-bottom: 10px; }
+.pc .v-home .more { display: none; }
+.pc .v-home .badges { gap: 10px; }
+.pc .v-home .badge { padding: 8px 4px; }
+.pc .v-home .badge span { font-size: 30px; }
+
+/* 목록 화면: 한 화면에 모두 */
+.pc .cards.themes { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 14px; }
+.pc .cards.stories { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
+.pc .cards.stages { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; }
+.pc .cards.themes .mode-card { min-height: 0; padding: 12px 14px 14px; border-radius: 24px; }
+.pc .cards.themes .glyph { min-width: 52px; height: 52px; font-size: 30px; border-radius: 18px; margin-bottom: 8px; }
+.pc .cards.themes .mc-t { font-size: 18px; }
+.pc .cards.themes .mc-d { font-size: 13px; }
+.pc .cards.stories .mode-card { min-height: 0; padding: 14px 16px 16px; }
+.pc .cards.stories .glyph { min-width: 56px; height: 56px; font-size: 32px; margin-bottom: 8px; }
+.pc .cards.stories .mc-t { font-size: 19px; }
+.pc .cards.stages .mode-card { min-height: 0; padding: 20px; }
+.pc .story-opts { margin-bottom: 14px; padding: 10px 18px; }
+
+/* 연습/동화: 높이를 맞춤 */
+.pc .pv > .target-card, .pc .pv > .story-card { min-height: 300px; height: 300px; }
+.pc .pv > .typed { min-height: 140px; }
+.pc .pv > .tipbox { margin-top: 14px; }
+.pc .pv > .note { display: none; }
+.pc .emoji { font-size: 96px; }
+.pc .big-jamo { font-size: 150px; }
+.pc .target { font-size: 76px; }
+.pc .hintline { margin: 12px 0; }
+.pc .pv .kb { padding: 14px; gap: 8px; }
+.pc .pv .kb-row { gap: 8px; }
+.pc .pv .key { height: 64px; }
+
+/* 게임 */
+.pc .gv .bar { margin-bottom: 12px; }
+.pc .gv .gin { margin-top: 12px; }
+.pc .gv .typed { min-height: 62px; font-size: 30px; }
+.pc .gv .hintline { margin: 8px 0; }
+.pc .gv .kb { padding: 10px; gap: 5px; }
+.pc .gv .kb-row { gap: 5px; }
+.pc .gv .key { height: 48px; }
+.pc .gv-race .key { height: 40px; }
+.pc .gv-race .key b { font-size: 20px; }
+.pc .gv-race .race-target { margin-top: 10px; padding: 8px 18px; min-height: 0; }
+.pc .gv-race .race-target .target { font-size: 46px; }
+.pc .gv-race .rt-emoji { font-size: 46px; }
+.pc .gv-race .gin { margin-top: 10px; }
+.pc .gv-race .typed { min-height: 54px; }
+
+/* 결과, 사용자 고르기 */
+.pc .result { padding: 28px; }
+.pc .profiles { padding: 26px 30px; }
+.pc .pf-av { font-size: 76px; }
+.pc .av-b { width: 80px; height: 80px; font-size: 48px; }
+.pc .new-profile { margin-top: 18px; padding-top: 14px; }
+.pc .cards.themes .mode-card { padding: 10px 14px 12px; }
+.pc .cards.themes .glyph { min-width: 44px; height: 44px; font-size: 26px; border-radius: 15px; margin-bottom: 6px; }
+.pc .cards.stories .mode-card { padding: 10px 14px 12px; gap: 1px; }
+.pc .cards.stories .glyph { min-width: 42px; height: 42px; font-size: 24px; border-radius: 14px; margin-bottom: 6px; }
+.pc .cards.stories .mc-t { font-size: 18px; }
+.pc .cards.stories .mc-d { font-size: 13px; }
+
+/* PC: 게임 안 창은 화면 안에 딱 맞게 (스크롤 없음) */
+.pc .overlay { overflow: hidden; padding: 14px; }
+.pc .ov-box { width: min(760px, 100%); max-height: none; overflow: visible; padding: 18px 26px; }
+.pc .ov-box h3 { font-size: 30px; }
+.pc .ov-box .lbl { margin: 8px 0 4px; }
+.pc .ov-box .tipbox, .pc #ov-pause .tipbox { display: none; }
+.pc #ov-pause .tipbox { display: block; }
+.pc .ov-box .actions { margin-top: 10px; }
+.pc .ov-box .statbar { margin-top: 6px; gap: 10px; }
+.pc .ov-box .stat { padding: 6px 10px; }
+.pc .ov-box .stat b { font-size: 22px; }
+.pc .ov-box .chips { gap: 5px; }
+.pc .ov-box .btn.big { padding: 10px 30px; font-size: 20px; }
+.pc #rc-setup .ov-box p, .pc #ov-start .ov-box > p:first-of-type { margin: 2px 0; }
+.pc #rc-over .ov-box { display: grid; grid-template-columns: 1fr 1fr; column-gap: 20px; align-items: center; text-align: center; }
+.pc #rc-over .ov-box h3, .pc #rc-over .ov-box .place, .pc #rc-over .ov-box .actions { grid-column: 1 / -1; }
+.pc #rc-over .podium { margin: 0; }
+.pc #rc-over .statbar { grid-template-columns: 1fr 1fr; }
+.pc .place { font-size: 26px; margin: 2px 0; }
+/* 레이스 작은 자판: 손가락 점 대신 글자만 */
+.pc .gv-race .key { height: 36px; border-radius: 11px; }
+.pc .gv-race .key::before, .pc .gv-race .key.bump::after { display: none; }
+.pc .gv-race .key i { font-size: 9px; top: 2px; left: 6px; }
+.pc .gv-race .key b { font-size: 19px; }
+.pc .gv-race .kb { padding: 8px; gap: 4px; }
+.pc .gv-race .kb-row { gap: 4px; }
+.pc .gv-race .hintline { margin: 6px 0; }
+.pc .gv .key b { line-height: 1; margin-top: -6px; }
+
+.opt-row { display: flex; flex-direction: column; align-items: center; }
+.pc .opt-row { flex-direction: row; justify-content: center; gap: 18px; flex-wrap: nowrap; }
+.pc .ov-box { width: min(880px, 100%); }
+
 </style>
 <div class="wrap">
   <aside class="side">
@@ -2465,11 +2581,11 @@ HT.Views.game = function (kind) {
   function resize() {
     var cssW = HT.$('#gv-frame').clientWidth || 800, narrow = HT.layout !== 'pc' && cssW < 600;
     W = narrow ? 480 : 800; FS = narrow ? 30 : 34;
-    var cssH = narrow ? Math.min(cssW * 1.0, innerHeight * 0.46) : HT.layout === 'pc' ? HT.clamp(innerHeight - 500, 320, cssW * 0.48) : Math.min(cssW * 0.56, innerHeight * 0.56);
+    var cssH = narrow ? Math.min(cssW * 1.0, innerHeight * 0.46) : HT.layout === 'pc' ? 372 : Math.min(cssW * 0.56, innerHeight * 0.56);
     cssH = Math.max(cssH, 230);
     H = Math.round(W * cssH / cssW);
     canvas.style.height = cssH + 'px';
-    var dpr = Math.min(2, devicePixelRatio || 1);
+    var dpr = Math.min(3, (devicePixelRatio || 1) * (HT.layout === 'pc' ? Math.max(1, HT.stageScale) : 1));
     canvas.width = Math.round(cssW * dpr); canvas.height = Math.round(cssH * dpr);
     ctx.setTransform(canvas.width / W, 0, 0, canvas.width / W, 0, 0);
     stars = []; for (var i = 0; i < 60; i++) stars.push({ x: Math.random() * W, y: Math.random() * H * 0.8, r: Math.random() < 0.2 ? 3 : 2, sp: HT.rand(0.5, 2), ph: Math.random() * 6 });
@@ -2715,8 +2831,8 @@ HT.Views.game = function (kind) {
   function startMenu() {
     var ov = HT.$('#ov-start');
     ov.innerHTML = '<div class="ov-box"><h3>' + HT.esc(HT.t(kind)) + '</h3><p>' + HT.esc(HT.t(kind + 'Desc')) + '</p>' +
-      '<p class="lbl">' + HT.esc(HT.t('content')) + '</p>' + HT.segmented('sg-content', [['jamo', HT.t('cJamo')], ['syl', HT.t('cSyl')], ['word', HT.t('cWord')]], cfg.content) +
-      '<p class="lbl">' + HT.esc(HT.t('speedSel')) + '</p>' + HT.segmented('sg-speed', [['slow', HT.t('slow')], ['normal', HT.t('normal')], ['fast', HT.t('fast')]], cfg.speed) +
+      '<div class="opt-row"><div class="opt"><p class="lbl">' + HT.esc(HT.t('content')) + '</p>' + HT.segmented('sg-content', [['jamo', HT.t('cJamo')], ['syl', HT.t('cSyl')], ['word', HT.t('cWord')]], cfg.content) + '</div>' +
+      '<div class="opt"><p class="lbl">' + HT.esc(HT.t('speedSel')) + '</p>' + HT.segmented('sg-speed', [['slow', HT.t('slow')], ['normal', HT.t('normal')], ['fast', HT.t('fast')]], cfg.speed) + '</div></div>' +
       '<p class="best">🏆 ' + HT.esc(HT.t('bestLbl')) + ' ' + (P.best[kind] || 0) + '</p>' +
       '<button type="button" class="btn primary big" id="gv-start">' + HT.esc(HT.t('start')) + '</button></div>';
     HT.bindSegmented(ov, 'sg-content', function (v) { cfg.content = v; saveCfg(); });
@@ -2755,7 +2871,7 @@ HT.Views.game = function (kind) {
       '<div class="statbar"><div class="stat"><small>' + HT.esc(HT.t('score')) + '</small><b>' + G.score + '</b></div>' +
       '<div class="stat"><small>' + HT.esc(HT.t('level')) + '</small><b>' + G.level + '</b></div>' +
       '<div class="stat"><small>' + HT.esc(HT.t('maxCombo')) + '</small><b>' + G.maxCombo + '</b></div></div>' +
-      (G.caught.length ? '<p class="lbl">' + HT.esc(HT.t('caught')) + '</p><div class="chips">' + G.caught.map(function (w) {
+      (G.caught.length ? '<p class="lbl">' + HT.esc(HT.t('caught')) + '</p><div class="chips">' + G.caught.slice(-12).map(function (w) {
         var it = HT.WORD_INDEX[w];
         return '<button type="button" class="chip" data-say="' + HT.esc(it ? w : (HT.JINFO[w] ? HT.JINFO[w][0] : w)) + '">' + (it ? it.emoji + ' ' : '') + HT.esc(w) + (it ? ' <small>' + HT.esc(it.en) + '</small>' : '') + '</button>';
       }).join('') + '</div>' : '') +
@@ -2869,10 +2985,10 @@ HT.Views.race = function () {
   function resize() {
     var cssW = HT.$('#rc-frame').clientWidth || 800, narrow = HT.layout !== 'pc' && cssW < 600;
     W = narrow ? 480 : 800;
-    var cssH = narrow ? Math.max(220, cssW * 0.62) : HT.layout === 'pc' ? HT.clamp(innerHeight - 590, 280, cssW * 0.38) : Math.max(260, cssW * 0.4);
+    var cssH = narrow ? Math.max(220, cssW * 0.62) : HT.layout === 'pc' ? 372 : Math.max(260, cssW * 0.4);
     H = Math.round(W * cssH / cssW);
     canvas.style.height = cssH + 'px';
-    var dpr = Math.min(2, devicePixelRatio || 1);
+    var dpr = Math.min(3, (devicePixelRatio || 1) * (HT.layout === 'pc' ? Math.max(1, HT.stageScale) : 1));
     canvas.width = Math.round(cssW * dpr); canvas.height = Math.round(cssH * dpr);
     ctx.setTransform(canvas.width / W, 0, 0, canvas.width / W, 0, 0);
   }
@@ -3070,9 +3186,9 @@ HT.Views.race = function () {
   function setup() {
     var ov = HT.$('#rc-setup');
     ov.innerHTML = '<div class="ov-box"><h3>🏁 ' + HT.esc(HT.t('race')) + '</h3><p>' + HT.esc(HT.t('raceDesc')) + '</p>' +
-      '<p class="lbl">' + HT.esc(HT.t('content')) + '</p>' + HT.segmented('rs-content', [['word', HT.t('cWord')], ['sent', HT.t('cSent')]], cfg.content) +
-      '<p class="lbl">' + HT.esc(HT.t('diffSel')) + '</p>' + HT.segmented('rs-diff', [['easy', HT.t('easy')], ['normal', HT.t('normal')], ['hard', HT.t('hard')]], cfg.diff) +
-      '<p class="lbl">' + HT.esc(HT.t('lengthSel')) + '</p>' + HT.segmented('rs-dist', [['short', HT.t('short')], ['normal', HT.t('normal')], ['long', HT.t('long')]], cfg.dist) +
+      '<div class="opt-row"><div class="opt"><p class="lbl">' + HT.esc(HT.t('content')) + '</p>' + HT.segmented('rs-content', [['word', HT.t('cWord')], ['sent', HT.t('cSent')]], cfg.content) + '</div>' +
+      '<div class="opt"><p class="lbl">' + HT.esc(HT.t('diffSel')) + '</p>' + HT.segmented('rs-diff', [['easy', HT.t('easy')], ['normal', HT.t('normal')], ['hard', HT.t('hard')]], cfg.diff) + '</div>' +
+      '<div class="opt"><p class="lbl">' + HT.esc(HT.t('lengthSel')) + '</p>' + HT.segmented('rs-dist', [['short', HT.t('short')], ['normal', HT.t('normal')], ['long', HT.t('long')]], cfg.dist) + '</div></div>' +
       '<p class="note" id="rs-note"></p>' +
       '<button type="button" class="btn primary big" id="rc-start">' + HT.esc(HT.t('start')) + '</button></div>';
     function note() { HT.$('#rs-note').textContent = HT.t('rivalNote', { n: HT.Store.playerKpm() }) + ' → ' + rivalKpms().join(' / '); }
@@ -3171,6 +3287,14 @@ HT.renderHeader = function () {
 
 // PC는 반응형이 아니라 따로 짠 가로 구성(옆판 + 넓은 본문). 모바일 전용 구성은 다음 단계에서 따로 만듭니다.
 HT.layout = (globalThis.innerWidth || 1280) >= 1024 ? 'pc' : 'mobile';
+// PC 무대: 1600×900 한 장으로 설계하고 창 크기에 맞춰 통째로 확대·축소 (스크롤 없음)
+HT.STAGE = { w: 1600, h: 900 };
+HT.stageScale = 1;
+HT.fitStage = function () {
+  if (HT.layout !== 'pc') return;
+  HT.stageScale = Math.min(innerWidth / HT.STAGE.w, innerHeight / HT.STAGE.h);
+  document.documentElement.style.setProperty('--stage-scale', HT.stageScale.toFixed(4));
+};
 HT.NAV = [
   ['home', '🏝️', 'home'], ['keysMenu', 'ㄱ', 'keys'], ['wordsMenu', '가', 'words'], ['sentence', '글', 'sent'], ['storyMenu', '📖', 'story'],
   ['rain', '☔', 'rain'], ['balloon', '🎈', 'balloon'], ['race', '🏁', 'race']
@@ -3254,6 +3378,8 @@ HT.configDiff = function (base, next) {
 
 HT.boot = function () {
   document.documentElement.classList.add(HT.layout);
+  HT.fitStage();
+  addEventListener('resize', HT.fitStage);
   HT.Store.load();
   HT.$('#side-body').addEventListener('click', function (e) {
     var b = e.target.closest('[data-nav]'); if (!b) return;

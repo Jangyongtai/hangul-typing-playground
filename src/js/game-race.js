@@ -64,10 +64,10 @@ HT.Views.race = function () {
   function resize() {
     var cssW = HT.$('#rc-frame').clientWidth || 800, narrow = HT.layout !== 'pc' && cssW < 600;
     W = narrow ? 480 : 800;
-    var cssH = narrow ? Math.max(220, cssW * 0.62) : HT.layout === 'pc' ? HT.clamp(innerHeight - 590, 280, cssW * 0.38) : Math.max(260, cssW * 0.4);
+    var cssH = narrow ? Math.max(220, cssW * 0.62) : HT.layout === 'pc' ? 372 : Math.max(260, cssW * 0.4);
     H = Math.round(W * cssH / cssW);
     canvas.style.height = cssH + 'px';
-    var dpr = Math.min(2, devicePixelRatio || 1);
+    var dpr = Math.min(3, (devicePixelRatio || 1) * (HT.layout === 'pc' ? Math.max(1, HT.stageScale) : 1));
     canvas.width = Math.round(cssW * dpr); canvas.height = Math.round(cssH * dpr);
     ctx.setTransform(canvas.width / W, 0, 0, canvas.width / W, 0, 0);
   }
@@ -265,9 +265,9 @@ HT.Views.race = function () {
   function setup() {
     var ov = HT.$('#rc-setup');
     ov.innerHTML = '<div class="ov-box"><h3>🏁 ' + HT.esc(HT.t('race')) + '</h3><p>' + HT.esc(HT.t('raceDesc')) + '</p>' +
-      '<p class="lbl">' + HT.esc(HT.t('content')) + '</p>' + HT.segmented('rs-content', [['word', HT.t('cWord')], ['sent', HT.t('cSent')]], cfg.content) +
-      '<p class="lbl">' + HT.esc(HT.t('diffSel')) + '</p>' + HT.segmented('rs-diff', [['easy', HT.t('easy')], ['normal', HT.t('normal')], ['hard', HT.t('hard')]], cfg.diff) +
-      '<p class="lbl">' + HT.esc(HT.t('lengthSel')) + '</p>' + HT.segmented('rs-dist', [['short', HT.t('short')], ['normal', HT.t('normal')], ['long', HT.t('long')]], cfg.dist) +
+      '<div class="opt-row"><div class="opt"><p class="lbl">' + HT.esc(HT.t('content')) + '</p>' + HT.segmented('rs-content', [['word', HT.t('cWord')], ['sent', HT.t('cSent')]], cfg.content) + '</div>' +
+      '<div class="opt"><p class="lbl">' + HT.esc(HT.t('diffSel')) + '</p>' + HT.segmented('rs-diff', [['easy', HT.t('easy')], ['normal', HT.t('normal')], ['hard', HT.t('hard')]], cfg.diff) + '</div>' +
+      '<div class="opt"><p class="lbl">' + HT.esc(HT.t('lengthSel')) + '</p>' + HT.segmented('rs-dist', [['short', HT.t('short')], ['normal', HT.t('normal')], ['long', HT.t('long')]], cfg.dist) + '</div></div>' +
       '<p class="note" id="rs-note"></p>' +
       '<button type="button" class="btn primary big" id="rc-start">' + HT.esc(HT.t('start')) + '</button></div>';
     function note() { HT.$('#rs-note').textContent = HT.t('rivalNote', { n: HT.Store.playerKpm() }) + ' → ' + rivalKpms().join(' / '); }

@@ -30,6 +30,14 @@ HT.renderHeader = function () {
 
 // PC는 반응형이 아니라 따로 짠 가로 구성(옆판 + 넓은 본문). 모바일 전용 구성은 다음 단계에서 따로 만듭니다.
 HT.layout = (globalThis.innerWidth || 1280) >= 1024 ? 'pc' : 'mobile';
+// PC 무대: 1600×900 한 장으로 설계하고 창 크기에 맞춰 통째로 확대·축소 (스크롤 없음)
+HT.STAGE = { w: 1600, h: 900 };
+HT.stageScale = 1;
+HT.fitStage = function () {
+  if (HT.layout !== 'pc') return;
+  HT.stageScale = Math.min(innerWidth / HT.STAGE.w, innerHeight / HT.STAGE.h);
+  document.documentElement.style.setProperty('--stage-scale', HT.stageScale.toFixed(4));
+};
 HT.NAV = [
   ['home', '🏝️', 'home'], ['keysMenu', 'ㄱ', 'keys'], ['wordsMenu', '가', 'words'], ['sentence', '글', 'sent'], ['storyMenu', '📖', 'story'],
   ['rain', '☔', 'rain'], ['balloon', '🎈', 'balloon'], ['race', '🏁', 'race']
@@ -113,6 +121,8 @@ HT.configDiff = function (base, next) {
 
 HT.boot = function () {
   document.documentElement.classList.add(HT.layout);
+  HT.fitStage();
+  addEventListener('resize', HT.fitStage);
   HT.Store.load();
   HT.$('#side-body').addEventListener('click', function (e) {
     var b = e.target.closest('[data-nav]'); if (!b) return;
