@@ -62,9 +62,9 @@ HT.Views.race = function () {
   R = newRace();
 
   function resize() {
-    var cssW = HT.$('#rc-frame').clientWidth || 800, narrow = cssW < 600;
+    var cssW = HT.$('#rc-frame').clientWidth || 800, narrow = HT.layout !== 'pc' && cssW < 600;
     W = narrow ? 480 : 800;
-    var cssH = narrow ? Math.max(220, cssW * 0.62) : Math.max(260, cssW * 0.4);
+    var cssH = narrow ? Math.max(220, cssW * 0.62) : HT.layout === 'pc' ? HT.clamp(innerHeight - 590, 280, cssW * 0.38) : Math.max(260, cssW * 0.4);
     H = Math.round(W * cssH / cssW);
     canvas.style.height = cssH + 'px';
     var dpr = Math.min(2, devicePixelRatio || 1);
@@ -139,19 +139,20 @@ HT.Views.race = function () {
   function draw() {
     var narrow = W < 600, x0 = narrow ? 96 : 140, x1 = W - 44, top = 34, bottom = H - 16, laneH = (bottom - top) / R.racers.length;
     // 잔디 (줄무늬)
-    ctx.fillStyle = '#8ED27A'; ctx.fillRect(0, 0, W, H);
-    ctx.fillStyle = '#84CB70'; for (var s = 0; s < W; s += 56) ctx.fillRect(s, 0, 28, H);
+    ctx.fillStyle = '#5CBF4B'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#52B341'; for (var s = 0; s < W; s += 56) ctx.fillRect(s, 0, 28, H);
     // 위쪽 응원 깃발 줄
     ctx.strokeStyle = 'rgba(107,78,53,0.4)'; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.moveTo(0, 8); for (var q = 0; q <= W; q += 40) ctx.quadraticCurveTo(q + 20, 18, q + 40, 8); ctx.stroke();
-    var flagCols = ['#F7877A', '#FFD964', '#6CC3EE', '#B9A6F2', '#7CC56B'];
+    var flagCols = ['#FF5E57', '#FFC928', '#2FAEF0', '#8E6BF0', '#3DBF4E'];
     for (var f = 10, n = 0; f < W; f += 40, n++) {
       ctx.fillStyle = flagCols[n % 5];
       ctx.beginPath(); ctx.moveTo(f + 4, 12); ctx.lineTo(f + 26, 12); ctx.lineTo(f + 15, 27); ctx.closePath(); ctx.fill();
     }
     // 트랙
-    ctx.fillStyle = '#E8A27C';
-    HT.Art.roundRect(ctx, 6, top, W - 12, bottom - top, 18); ctx.fill();
+    ctx.fillStyle = '#B85A2E'; HT.Art.roundRect(ctx, 6, top + 6, W - 12, bottom - top, 18); ctx.fill();
+    var tg = ctx.createLinearGradient(0, top, 0, bottom); tg.addColorStop(0, '#F08A55'); tg.addColorStop(1, '#DB6E3A');
+    ctx.fillStyle = tg; HT.Art.roundRect(ctx, 6, top, W - 12, bottom - top, 18); ctx.fill();
     R.racers.forEach(function (r, i) {
       var y = top + i * laneH;
       if (r.me) { ctx.fillStyle = 'rgba(255, 217, 100, 0.35)'; ctx.fillRect(6, y, W - 12, laneH); }
@@ -161,12 +162,12 @@ HT.Views.race = function () {
       }
       // 이름표
       var tagW = x0 - 22, tagH = Math.min(laneH - 10, 44), ty = y + laneH / 2;
-      ctx.fillStyle = r.me ? '#FFD964' : '#FFFCF2';
+      ctx.fillStyle = r.me ? '#FFC928' : '#FFFFFF';
       HT.Art.roundRect(ctx, 12, ty - tagH / 2, tagW, tagH, tagH / 2); ctx.fill();
       ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-      ctx.font = Math.round(tagH * 0.38) + 'px ' + HT.FONT_KO; ctx.fillStyle = '#6B4E35';
+      ctx.font = '700 ' + Math.round(tagH * 0.38) + 'px ' + HT.FONT_KO; ctx.fillStyle = '#5A3A1E';
       ctx.fillText(r.name, 24, ty - tagH * 0.16, tagW - 20);
-      ctx.font = Math.round(tagH * 0.26) + 'px ' + HT.FONT_KO; ctx.fillStyle = '#9A7F63';
+      ctx.font = '700 ' + Math.round(tagH * 0.26) + 'px ' + HT.FONT_KO; ctx.fillStyle = '#9A7F63';
       var kpmTxt = (r.me ? liveKpm() : r.kpm) + ' ' + HT.t('speedUnit');
       ctx.fillText(kpmTxt, 24, ty + tagH * 0.22, tagW - 20);
     });
@@ -188,7 +189,7 @@ HT.Views.race = function () {
       var y = top + i * laneH + laneH * 0.5, x = x0 + 12 + r.shown * (x1 - x0 - 24);
       var running = R.state === 'run' && !r.fin && !(r.stumble > 0);
       var bob = running ? Math.abs(Math.sin(R.t * 13 + i * 1.7)) * laneH * 0.12 : 0;
-      var size = Math.round(laneH * 0.6);
+      var size = Math.round(laneH * 0.78);
       ctx.fillStyle = 'rgba(107, 78, 53, 0.22)';
       ctx.beginPath(); ctx.ellipse(x, y + size * 0.42, size * 0.38 - bob * 0.3, size * 0.1, 0, 0, Math.PI * 2); ctx.fill();
       ctx.save(); ctx.translate(x, y - bob); ctx.scale(-1, 1);
@@ -205,7 +206,7 @@ HT.Views.race = function () {
       var n2 = Math.ceil(R.cd), txt = n2 > 0 ? String(n2) : HT.t('go'), sz = Math.round(H * 0.24);
       var pulse = 1 + (R.cd % 1) * 0.25;
       ctx.save(); ctx.translate(W / 2, H / 2); ctx.scale(pulse, pulse);
-      HT.Art.bubble(ctx, 0, 0, Math.max(sz * 1.6, sz * txt.length * 0.75), sz * 1.3, '#FFD964', null);
+      HT.Art.bubble(ctx, 0, 0, Math.max(sz * 1.6, sz * txt.length * 0.75), sz * 1.3, '#FFC928', null);
       HT.Art.label(ctx, txt, 0, 4, sz, '#6B4E35', null);
       ctx.restore();
     }

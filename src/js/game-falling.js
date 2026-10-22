@@ -2,10 +2,10 @@
 var HT = globalThis.HT = globalThis.HT || {};
 HT.Views = HT.Views || {};
 
-HT.FONT_KO = "Jua, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif";
+HT.FONT_KO = "'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif";
 HT.FONT_EMOJI = "'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif";
 
-HT.BALLOON_COLORS = ['#F7877A', '#6CC3EE', '#7CC56B', '#F5A3C7', '#FFB85C', '#B9A6F2', '#3CC2A6'];
+HT.BALLOON_COLORS = ['#FF5E57', '#2FAEF0', '#3DBF4E', '#FF6FB0', '#FF9F1C', '#8E6BF0', '#10C2A0'];
 
 // 게임에 나올 단어 묶음
 HT.gamePool = function (content, level) {
@@ -48,9 +48,9 @@ HT.Views.game = function (kind) {
 
   // ---- 크기 ----
   function resize() {
-    var cssW = HT.$('#gv-frame').clientWidth || 800, narrow = cssW < 600;
+    var cssW = HT.$('#gv-frame').clientWidth || 800, narrow = HT.layout !== 'pc' && cssW < 600;
     W = narrow ? 480 : 800; FS = narrow ? 30 : 34;
-    var cssH = narrow ? Math.min(cssW * 1.0, innerHeight * 0.46) : Math.min(cssW * 0.56, innerHeight * 0.56);
+    var cssH = narrow ? Math.min(cssW * 1.0, innerHeight * 0.46) : HT.layout === 'pc' ? HT.clamp(innerHeight - 500, 320, cssW * 0.48) : Math.min(cssW * 0.56, innerHeight * 0.56);
     cssH = Math.max(cssH, 230);
     H = Math.round(W * cssH / cssW);
     canvas.style.height = cssH + 'px';
@@ -70,7 +70,7 @@ HT.Views.game = function (kind) {
   HT._gameDebug = function () { return { level: G.level, speedMul: speedMul(), travel: travelSeconds(), spawnEvery: spawnEvery(), max: maxOnScreen(), ents: G.ents.length }; };
 
   function textW(e) {
-    ctx.font = FS + 'px ' + HT.FONT_KO;
+    ctx.font = '700 ' + FS + 'px ' + HT.FONT_KO;
     return ctx.measureText(e.text).width;
   }
   function conflicts(keys) {
@@ -91,7 +91,7 @@ HT.Views.game = function (kind) {
       e.w = w; e.x = HT.rand(16 + w / 2, W - 16 - w / 2); e.y = -FS * 0.6;
       v = (H - 34) / travelSeconds();
     } else {
-      e.r = Math.max(e.emoji ? FS * 1.5 : FS * 1.2, w / 2 + 16);
+      e.r = Math.max(e.emoji ? FS * 1.7 : FS * 1.3, w / 2 + 18);
       e.x = HT.rand(e.r + 12, W - e.r - 12); e.y = H + e.r * 1.2;
       e.ph = Math.random() * 6; e.amp = HT.rand(8, 18); e.wf = HT.rand(0.8, 1.6);
       e.color = e.gold ? '#FFD23F' : HT.pick(HT.BALLOON_COLORS);
@@ -221,8 +221,8 @@ HT.Views.game = function (kind) {
     if (G.banner) {
       var bw = Math.min(W - 40, FS * 9), bh = FS * 1.8, k = Math.min(1, (1.6 - G.banner.life) * 6);
       ctx.save(); ctx.translate(W / 2, H * 0.4); ctx.scale(0.6 + 0.4 * k, 0.6 + 0.4 * k);
-      HT.Art.bubble(ctx, 0, 0, bw, bh, '#FFD964', null);
-      HT.Art.label(ctx, G.banner.text, 0, 2, Math.round(FS * 0.9), '#6B4E35', null);
+      HT.Art.bubble(ctx, 0, 0, bw, bh, '#FFC928', null);
+      HT.Art.label(ctx, G.banner.text, 0, 2, Math.round(FS * 0.9), '#5A3A1E', null);
       ctx.restore();
     }
     if (G.slowT > 0) { ctx.fillStyle = 'rgba(143, 211, 244, 0.18)'; ctx.fillRect(0, 0, W, H); }
@@ -230,37 +230,37 @@ HT.Views.game = function (kind) {
   }
   function drawBg() {
     if (kind === 'rain') {
-      HT.Art.sky(ctx, W, H, '#9ED4EE', '#E4F4FA');
+      HT.Art.sky(ctx, W, H, '#45B4EC', '#BDE9F8');
       clouds.forEach(function (c) { HT.Art.cloud(ctx, c.x, 26 + c.y * 0.25, c.s * 0.9, 0.95); });
       HT.Art.hills(ctx, W, H, H - 30, G.t);
     } else {
-      HT.Art.sky(ctx, W, H, '#7FCBF0', '#FFF1D6');
-      ctx.fillStyle = 'rgba(255, 236, 170, 0.7)'; ctx.beginPath(); ctx.arc(W - 70, 62, 34, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = '#FFE48A'; ctx.beginPath(); ctx.arc(W - 70, 62, 24, 0, Math.PI * 2); ctx.fill();
+      HT.Art.sky(ctx, W, H, '#3AACEA', '#FFE7B0');
+      ctx.fillStyle = 'rgba(255, 220, 90, 0.55)'; ctx.beginPath(); ctx.arc(W - 70, 62, 36, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#FFD02E'; ctx.beginPath(); ctx.arc(W - 70, 62, 24, 0, Math.PI * 2); ctx.fill();
       clouds.forEach(function (c) { HT.Art.cloud(ctx, c.x, c.y, c.s, 0.9); });
       HT.Art.hills(ctx, W, H, H - 18, G.t);
     }
   }
   function wordColors(e, match) {
-    if (match) return { fill: '#FFF0B3', edge: '#FFD964', ink: '#6B4E35' };
-    if (e.gold) return { fill: '#FFD964', edge: '#E9B33F', ink: '#6B4E35' };
-    return { fill: '#FFFCF2', edge: null, ink: '#6B4E35' };
+    if (match) return { fill: '#FFE173', edge: '#DB960B', ink: '#5A3A1E' };
+    if (e.gold) return { fill: '#FFC928', edge: '#DB960B', ink: '#5A3A1E' };
+    return { fill: '#FFFFFF', edge: null, ink: '#5A3A1E' };
   }
   function drawWord(e, match) {
     var c = wordColors(e, match), bw = e.w + FS * 1.1, bh = FS * 1.45;
     HT.Art.bubble(ctx, e.x, e.y, bw, bh, c.fill, c.edge);
     // 빗방울 꼬리
     ctx.fillStyle = c.fill; ctx.beginPath(); ctx.moveTo(e.x - 8, e.y - bh / 2 + 2); ctx.quadraticCurveTo(e.x, e.y - bh / 2 - 16, e.x + 8, e.y - bh / 2 + 2); ctx.fill();
-    if (e.emoji) HT.Art.emoji(ctx, e.emoji, e.x - bw / 2 - FS * 0.1, e.y - bh * 0.45, Math.round(FS * 0.8));
+    if (e.emoji) HT.Art.emoji(ctx, e.emoji, e.x - bw / 2 - FS * 0.15, e.y - bh * 0.5, Math.round(FS * 1.05));
     HT.Art.label(ctx, e.text, e.x, e.y + 2, FS, c.ink, null);
     if (e.gold) HT.Art.star(ctx, e.x + bw / 2 - 4, e.y - bh / 2 + 4, 9, '#FFFFFF');
-    if (e.sub) HT.Art.label(ctx, e.sub, e.x, e.y + bh * 0.78, Math.round(FS * 0.42), '#3F6E86', 'rgba(255,255,255,0.85)');
+    if (e.sub) HT.Art.label(ctx, e.sub, e.x, e.y + bh * 0.78, Math.round(FS * 0.42), '#1F5E80', 'rgba(255,255,255,0.9)');
   }
   function drawBalloon(e, match) {
     var x = e.cx == null ? e.x : e.cx, y = e.y, r = e.r, ry = r * 1.18;
     HT.Art.balloon(ctx, x, y, r, e.color, match || e.gold);
     var ty = y;
-    if (e.emoji) { HT.Art.emoji(ctx, e.emoji, x, y - ry * 0.42, Math.round(FS * 0.72)); ty = y + ry * 0.26; }
+    if (e.emoji) { HT.Art.emoji(ctx, e.emoji, x, y - ry * 0.4, Math.round(FS * 0.95)); ty = y + ry * 0.3; }
     HT.Art.label(ctx, e.text, x, ty, FS, '#FFFFFF', 'rgba(70, 50, 30, 0.55)');
     if (e.sub) HT.Art.label(ctx, e.sub, x, y + ry + r * 0.62, Math.round(FS * 0.42), '#6B4E35', '#FFFFFF');
   }
@@ -374,7 +374,7 @@ HT.Views.game = function (kind) {
   resize(); startMenu();
   HT.inputHandler = onKey;
   raf = requestAnimationFrame(loop);
-  if (document.fonts && document.fonts.load) document.fonts.load(FS + 'px Jua').catch(function () {});
+  if (document.fonts && document.fonts.load) document.fonts.load('700 ' + FS + 'px "Noto Sans KR"').catch(function () {});
 
   return function () {
     cancelAnimationFrame(raf);

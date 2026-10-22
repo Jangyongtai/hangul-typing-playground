@@ -25,6 +25,32 @@ HT.renderHeader = function () {
     '<button type="button" class="btn small toggle" id="hd-say" aria-pressed="' + (s.speech !== false) + '" title="' + HT.esc(HT.t('readAloud')) + '">🗣️</button>';
   HT.$('#app-title').textContent = HT.t('appName');
   document.documentElement.lang = HT.lang;
+  HT.renderSide();
+};
+
+// PC는 반응형이 아니라 따로 짠 가로 구성(옆판 + 넓은 본문). 모바일 전용 구성은 다음 단계에서 따로 만듭니다.
+HT.layout = (globalThis.innerWidth || 1280) >= 1024 ? 'pc' : 'mobile';
+HT.NAV = [
+  ['home', '🏝️', 'home'], ['keysMenu', 'ㄱ', 'keys'], ['wordsMenu', '가', 'words'], ['sentence', '글', 'sent'], ['storyMenu', '📖', 'story'],
+  ['rain', '☔', 'rain'], ['balloon', '🎈', 'balloon'], ['race', '🏁', 'race']
+];
+HT.renderSide = function () {
+  var el = HT.$('#side-body');
+  if (!el) return;
+  var p = HT.Store.profile();
+  if (HT.layout !== 'pc' || !p) { el.innerHTML = ''; return; }
+  var d = HT.Store.data(), cur = HT.route && HT.route.name;
+  var group = { practice: 'keysMenu wordsMenu practice result storyMenu story', home: 'home' };
+  el.innerHTML = '<div class="side-me"><div class="side-av" aria-hidden="true">' + HT.esc(p.avatar) + '</div>' +
+    '<div class="side-name">' + HT.esc(p.name) + '</div>' +
+    '<div class="side-stats"><span>🔥 ' + HT.esc(HT.t('days', { n: d.streak })) + '</span><span>⭐ ' + HT.Store.totalStars() + '</span><span>📚 ' + d.wordsTyped + '</span></div></div>' +
+    '<nav class="side-nav">' + HT.NAV.map(function (n) {
+      var on = cur === n[0] || (n[0] === 'sentence' && cur === 'practice' && HT.route.arg && HT.route.arg.kind === 'sent') ||
+        (n[0] === 'storyMenu' && cur === 'story') ||
+        (n[0] === 'keysMenu' && cur === 'practice' && HT.route.arg && HT.route.arg.kind === 'keys') ||
+        (n[0] === 'wordsMenu' && cur === 'practice' && HT.route.arg && HT.route.arg.kind === 'words');
+      return '<button type="button" class="nav-b' + (on ? ' on' : '') + '" data-nav="' + n[0] + '"><span class="nav-i">' + n[1] + '</span>' + HT.esc(HT.t(n[2])) + '</button>';
+    }).join('') + '</nav>';
 };
 
 HT.applySettings = function () {
@@ -86,7 +112,13 @@ HT.configDiff = function (base, next) {
 };
 
 HT.boot = function () {
+  document.documentElement.classList.add(HT.layout);
   HT.Store.load();
+  HT.$('#side-body').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-nav]'); if (!b) return;
+    HT.Sfx.click();
+    if (b.dataset.nav === 'sentence') HT.startSentences(); else HT.go(b.dataset.nav);
+  });
   HT.applySettings();
   HT.Speech.init();
   var logoTaps = 0, logoT = 0;

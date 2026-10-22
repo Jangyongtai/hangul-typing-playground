@@ -1,28 +1,29 @@
 /* Layout: 섬 마을 게시판 — 모래빛 바탕 위에 둥근 크림색 카드, 잎사귀 초록과 햇살 노랑 포인트, 게임은 둥근 창 */
 :root {
-  --sand: #F4EEDB;
-  --sand-dot: #EAE1C6;
-  --card: #FFFCF2;
-  --card-base: #E6DABB;
-  --ink: #6B4E35;
-  --ink-soft: #9A7F63;
-  --leaf: #5CB85C;
-  --leaf-dark: #3F9145;
-  --mint: #3CC2A6;
-  --mint-dark: #279784;
-  --sun: #FFD964;
-  --sun-dark: #E9B33F;
-  --coral: #F7877A;
-  --coral-dark: #D9665A;
-  --sky: #8FD3F4;
-  --sky-soft: #DDF2FB;
-  --lilac: #B9A6F2;
-  --ok: #3F9145;
-  --f-display: 'Jua', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif;
-  --f-body: 'Gowun Dodum', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif;
-  --f-num: 'Nunito', 'Jua', 'Apple SD Gothic Neo', sans-serif;
+  --sand: #F2E2B8;
+  --sand-dot: #E6D09B;
+  --card: #FFFBEF;
+  --card-base: #D5BA80;
+  --ink: #5A3A1E;
+  --ink-soft: #8C6A48;
+  --leaf: #35B045;
+  --leaf-dark: #23842F;
+  --mint: #14B795;
+  --mint-dark: #0B8A70;
+  --sun: #FFC928;
+  --sun-dark: #DB960B;
+  --coral: #FF6B5E;
+  --coral-dark: #CF4639;
+  --sky: #3DB8F2;
+  --sky-soft: #C4ECFF;
+  --lilac: #9B7BF0;
+  --ok: #23842F;
+  --f-display: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  --f-body: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  --f-num: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
   --r-card: 26px;
-  --lift: 0 6px 0 var(--card-base), 0 14px 28px rgba(107, 78, 53, 0.12);
+  --lift: inset 0 2px 0 #FFFFFF, 0 8px 0 var(--card-base), 0 18px 30px rgba(90, 58, 30, 0.2);
+  --shine: linear-gradient(180deg, #FFFFFF 0%, var(--card) 55%, #FBF1DA 100%);
   color-scheme: light;
 }
 [hidden] { display: none !important; }
@@ -340,3 +341,160 @@ h2.sec {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* ---- 입체감 강화 ---- */
+.panel, .mode-card, .bubble, .target-card, .story-card, .race-target, .ov-box, .stat, .meter, .hud-i, .toast { background: var(--shine); }
+.stat, .meter, .hud-i { box-shadow: inset 0 2px 0 #FFFFFF, 0 5px 0 var(--card-base), 0 8px 16px rgba(90, 58, 30, 0.14); }
+.btn { background: var(--shine); box-shadow: inset 0 2px 0 #FFFFFF, 0 5px 0 var(--card-base), 0 8px 16px rgba(90, 58, 30, 0.16); }
+.btn:active { box-shadow: inset 0 2px 0 #FFFFFF, 0 1px 0 var(--card-base); }
+.btn.primary { background: linear-gradient(180deg, #3FD6B4, var(--mint)); box-shadow: inset 0 2px 0 rgba(255,255,255,0.45), 0 5px 0 var(--mint-dark), 0 10px 18px rgba(11, 138, 112, 0.3); }
+.btn.who, h2.sec { background: linear-gradient(180deg, #FFDB5C, var(--sun)); box-shadow: inset 0 2px 0 rgba(255,255,255,0.6), 0 4px 0 var(--sun-dark), 0 8px 14px rgba(219, 150, 11, 0.25); }
+.btn.danger { background: linear-gradient(180deg, #FF8A7F, var(--coral)); }
+.logo { background: linear-gradient(180deg, #5FD06A, var(--leaf)); box-shadow: inset 0 3px 0 rgba(255,255,255,0.4), 0 6px 0 var(--leaf-dark), 0 12px 22px rgba(35, 132, 47, 0.35); }
+.mascot { background: radial-gradient(circle at 35% 28%, #FFF3B8, var(--sun) 62%, #F2AE12); box-shadow: inset 0 -6px 0 rgba(219, 150, 11, 0.45), 0 7px 0 var(--sun-dark), 0 16px 28px rgba(219, 150, 11, 0.4); }
+.glyph { box-shadow: inset 0 2px 0 rgba(255,255,255,0.7), inset 0 -5px 0 rgba(90, 58, 30, 0.12), 0 3px 0 rgba(90, 58, 30, 0.12); }
+.cards > .mode-card:nth-child(4n+1) .glyph { background: #B5E6FF; }
+.cards > .mode-card:nth-child(4n+2) .glyph { background: #BDEBA6; }
+.cards > .mode-card:nth-child(4n+3) .glyph { background: #FFE286; }
+.cards > .mode-card:nth-child(4n+4) .glyph { background: #FFC2B8; }
+.mode-card:hover { transform: translateY(-4px) rotate(-0.4deg); box-shadow: inset 0 2px 0 #FFFFFF, 0 12px 0 var(--card-base), 0 24px 34px rgba(90, 58, 30, 0.22); }
+.key { background: linear-gradient(180deg, #FFFFFF, #FBF2DC); box-shadow: inset 0 2px 0 #FFFFFF, 0 5px 0 var(--card-base), 0 7px 10px rgba(90, 58, 30, 0.18); }
+.key.wide { background: linear-gradient(180deg, #F8EED2, #EBDDB6); }
+.key.hint { background: linear-gradient(180deg, #FFDF66, var(--sun)); box-shadow: inset 0 2px 0 rgba(255,255,255,0.6), 0 5px 0 var(--sun-dark), 0 0 0 4px rgba(255, 201, 40, 0.45); }
+.key.on { background: linear-gradient(180deg, #3FD6B4, var(--mint)); box-shadow: 0 5px 0 var(--mint-dark); }
+.kb { background: linear-gradient(180deg, #E8D3A0, #DDC388); box-shadow: inset 0 3px 6px rgba(90, 58, 30, 0.18), 0 2px 0 #FFFFFF; }
+.typed { background: #FFFFFF; box-shadow: inset 0 4px 0 #EFE0BB, 0 4px 0 var(--card-base); }
+.progress { box-shadow: inset 0 3px 0 #E6D09B; background: #FFF6DE; }
+.progress div { background: linear-gradient(180deg, #7EE07A, var(--leaf)); box-shadow: inset 0 2px 0 rgba(255,255,255,0.45); }
+.screen { border-color: #FFFFFF; box-shadow: 0 8px 0 var(--card-base), 0 20px 36px rgba(90, 58, 30, 0.24); }
+.pf-use { background: linear-gradient(180deg, #DDF4FF, #B9E5FB); box-shadow: inset 0 2px 0 #FFFFFF, 0 6px 0 #86C6E6; }
+.say { background: linear-gradient(180deg, #DDF4FF, #B9E5FB); box-shadow: 0 4px 0 #86C6E6; }
+.chip { background: linear-gradient(180deg, #DDF4FF, #B9E5FB); box-shadow: 0 3px 0 #86C6E6; }
+.seg { box-shadow: inset 0 3px 4px rgba(90, 58, 30, 0.15); }
+.seg-b[aria-pressed="true"] { background: linear-gradient(180deg, #FFDF66, var(--sun)); color: var(--ink); box-shadow: 0 3px 0 var(--sun-dark); }
+.badge.on { background: var(--shine); box-shadow: inset 0 2px 0 #FFFFFF, 0 5px 0 var(--card-base); }
+.tipbox { background: linear-gradient(180deg, #FFF4C4, #FFEA9E); box-shadow: inset 0 2px 0 rgba(255,255,255,0.7), 0 4px 0 #E8C766; }
+.ch { color: #C2AD84; }
+
+/* ---- 깔끔한 글꼴: 굵기로 위계 ---- */
+body { font-weight: 500; }
+h2, h3, .logo, .btn, .lbl, .bubble, .mc-t, .stat b, .meter b, .hud-i b, .seg-b, .chip, .praise, .tag, .hintline kbd,
+.pf-name, .place, .podium li, .extra, .toast, .best, .newbest, .new-profile label, .glyph, .sv-prev, .sv-next { font-weight: 800; }
+.target, .big-jamo, .typed, .key b { font-weight: 700; }
+.logo, h2 { letter-spacing: -0.5px; }
+.target, .big-jamo { letter-spacing: -1px; }
+.side-body:empty { display: none; }
+.side-body { display: none; }
+
+/* ================= PC 전용 구성 ================= */
+.pc body { min-width: 1180px; }
+.pc .wrap { max-width: 1600px; display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 30px; align-items: start; padding-block: 22px 44px; }
+.pc .side { position: sticky; top: 22px; display: flex; flex-direction: column; gap: 18px; }
+.pc .top { flex-direction: column; align-items: stretch; margin: 0; gap: 14px; }
+.pc .logo { font-size: 30px; padding: 10px 22px 12px 58px; text-align: left; }
+.pc .logo::before { width: 42px; height: 42px; font-size: 21px; left: 9px; }
+.pc .top-actions { justify-content: space-between; }
+.pc .top-actions .who { display: none; }
+.pc .side-body { display: flex; flex-direction: column; gap: 16px; }
+.side-me { background: var(--shine); border-radius: 30px; box-shadow: var(--lift); padding: 22px 18px 18px; text-align: center; }
+.side-av {
+  font-size: 104px; line-height: 1; width: 168px; height: 168px; margin: 0 auto 10px; border-radius: 50%; display: grid; place-items: center;
+  background: radial-gradient(circle at 35% 28%, #FFF3B8, var(--sun) 62%, #F2AE12);
+  box-shadow: inset 0 -8px 0 rgba(219, 150, 11, 0.45), 0 8px 0 var(--sun-dark), 0 18px 30px rgba(219, 150, 11, 0.4);
+  animation: bob 2.6s ease-in-out infinite; cursor: default;
+}
+.side-name { font-size: 26px; font-weight: 900; }
+.side-stats { display: flex; justify-content: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.side-stats span { background: var(--sand); border-radius: 999px; padding: 3px 12px; font-weight: 800; font-size: 15px; box-shadow: inset 0 2px 0 var(--sand-dot); }
+.side-nav { display: flex; flex-direction: column; gap: 8px; background: var(--shine); border-radius: 30px; box-shadow: var(--lift); padding: 14px; }
+.nav-b {
+  display: flex; align-items: center; gap: 12px; border: 0; background: transparent; border-radius: 18px; padding: 8px 10px;
+  font-weight: 800; font-size: 18px; cursor: pointer; text-align: left; color: var(--ink);
+}
+.nav-b:hover { background: #FFF3CF; }
+.nav-b.on { background: linear-gradient(180deg, #FFDB5C, var(--sun)); box-shadow: inset 0 2px 0 rgba(255,255,255,0.6), 0 4px 0 var(--sun-dark); }
+.nav-i { width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center; font-size: 22px; background: var(--sky-soft); box-shadow: inset 0 -3px 0 rgba(90, 58, 30, 0.12); flex: none; }
+.nav-b:nth-child(n+6) .nav-i { background: #BDEBA6; }
+.nav-b.on .nav-i { background: #FFFFFF; }
+
+/* 처음 화면 */
+.pc .v-home .hero { display: none; }
+.pc .v-home .statbar { margin-top: 0; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+.pc .stat { padding: 16px; border-radius: 24px; }
+.pc .stat b { font-size: 30px; }
+.pc .cards { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px; }
+.pc .cards.games { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.pc .cards.themes, .pc .cards.stories { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.pc .cards.stages { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.pc .mode-card { min-height: 200px; padding: 22px 22px 24px; border-radius: 30px; }
+.pc .cards.themes .mode-card, .pc .cards.stories .mode-card, .pc .cards.stages .mode-card { min-height: 170px; }
+.pc .glyph { min-width: 84px; height: 84px; font-size: 46px; border-radius: 26px; margin-bottom: 14px; }
+.pc .glyph.small { font-size: 24px; }
+.pc .mc-t { font-size: 24px; }
+.pc .mc-d { font-size: 15px; }
+.pc h2.sec { font-size: 22px; padding: 6px 22px 7px; margin: 30px 0 16px; }
+.pc .bar h2 { font-size: 30px; }
+.pc .badges { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+.pc .badge span { font-size: 36px; }
+
+/* 연습: 왼쪽 큰 문제 카드 + 오른쪽 입력·팁, 아래 큰 자판 */
+.pc .pv { display: grid; grid-template-columns: minmax(0, 1fr) 340px; column-gap: 24px; align-items: start; }
+.pc .pv > .bar, .pc .pv > .progress, .pc .pv > .hintline, .pc .pv > .kb, .pc .pv > .note { grid-column: 1 / -1; }
+.pc .pv > .target-card, .pc .pv > .story-card { grid-column: 1; grid-row: 3 / span 2; min-height: 360px; }
+.pc .pv > .typed { grid-column: 2; grid-row: 3; margin-top: 0; min-height: 170px; font-size: 40px; border-radius: 30px; }
+.pc .pv > .tipbox { grid-column: 2; grid-row: 4; margin: 16px 0 0; font-size: 16px; }
+.pc .emoji { font-size: 120px; }
+.pc .big-jamo { font-size: 170px; }
+.pc .target { font-size: 84px; }
+.pc .pv-sent .target, .pc .story-card .target { font-size: 46px; }
+.pc .sub { font-size: 20px; }
+.pc .say { width: 58px; height: 58px; font-size: 26px; top: 18px; right: 18px; }
+.pc .praise { font-size: 24px; top: 18px; left: 18px; }
+.pc .hintline { font-size: 19px; margin: 16px 0; }
+.pc .hintline kbd { font-size: 26px; }
+.pc .meter { min-width: 104px; padding: 6px 16px; border-radius: 22px; }
+.pc .meter b { font-size: 28px; }
+.pc .sv-prev, .pc .sv-next { font-size: 20px; }
+
+/* 자판: PC는 크고 시원하게 */
+.pc .kb { max-width: 1120px; padding: 18px; gap: 9px; border-radius: 32px; }
+.pc .kb-row { gap: 9px; }
+.pc .key { height: 72px; max-width: 88px; border-radius: 18px; }
+.pc .key b { font-size: 30px; }
+.pc .key i { font-size: 12px; top: 6px; left: 10px; }
+.pc .key::before { width: 10px; height: 10px; margin-left: -5px; bottom: 8px; }
+.pc .key.wide { max-width: 130px; }
+.pc .key.space { max-width: 520px; font-size: 18px; }
+
+/* 게임: 넓은 화면 + 아래 작은 자판 */
+.pc .gv .screen { border-width: 8px; border-radius: 36px; }
+.pc .gv .typed { font-size: 34px; min-height: 70px; }
+.pc .hud-i { min-width: 96px; padding: 5px 16px; border-radius: 20px; }
+.pc .hud-i b { font-size: 24px; }
+.pc .hearts { font-size: 30px; }
+.pc .gv .kb { max-width: 900px; padding: 12px; gap: 6px; }
+.pc .gv .kb-row { gap: 6px; }
+.pc .gv .key { height: 52px; border-radius: 14px; }
+.pc .gv .key b { font-size: 23px; }
+.pc .ov-box { width: min(620px, 100%); padding: 28px 32px; }
+.pc .ov-box h3 { font-size: 36px; }
+.pc .race-target .target { font-size: 56px; }
+.pc .rt-emoji { font-size: 60px; }
+
+/* 사용자 고르기: 큰 캐릭터 */
+.pc .profile-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; }
+.pc .pf-use { padding: 24px 10px; }
+.pc .pf-av { font-size: 88px; }
+.pc .pf-name { font-size: 24px; }
+.pc .av-b { width: 92px; height: 92px; font-size: 56px; }
+.pc .profiles { padding: 32px; }
+
+/* PC 보정 */
+.pc .pv > .kb { width: 100%; justify-self: center; }
+.pc .logo { font-size: 25px; white-space: nowrap; }
+.pc .side { max-height: calc(100vh - 44px); overflow-y: auto; scrollbar-width: none; }
+.pc .side-nav { gap: 4px; padding: 10px; }
+.pc .nav-b { padding: 6px 10px; font-size: 17px; }
+.pc .nav-i { width: 38px; height: 38px; font-size: 20px; }
+.pc .side-av { width: 150px; height: 150px; font-size: 92px; }
+.pc .gv .hintline { margin: 10px 0; }
