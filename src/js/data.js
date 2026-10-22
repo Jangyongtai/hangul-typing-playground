@@ -48,12 +48,13 @@ HT.STAGES = [
   { id: 'S6', ko: '아랫줄 자음', en: 'Bottom row consonants', jamo: 'ㅋㅌㅊㅍ', tip: 'lookScreen' },
   { id: 'S7', ko: '아랫줄 모음', en: 'Bottom row vowels', jamo: 'ㅠㅜㅡ', tip: 'shapeV' },
   { id: 'S8', ko: '쌍자음 (Shift)', en: 'Shift letters', jamo: 'ㄲㄸㅃㅆㅉㅒㅖ', tip: 'shift' },
-  { id: 'S9', ko: '글자 만들기', en: 'Build syllables', jamo: '', tip: 'block' }
+  { id: 'S9', ko: '글자 만들기', en: 'Build syllables', jamo: '', tip: 'block', syl: 'open' },
+  { id: 'S10', ko: '받침 글자', en: 'Syllables with batchim', jamo: '', tip: 'batchim', syl: 'batchim' }
 ];
 
 // 받침 없는 쉬운 글자
 HT.SYLLABLES = (function () {
-  var cs = 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅎ', vs = 'ㅏㅓㅗㅜㅡㅣ', out = [];
+  var cs = 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ', vs = 'ㅏㅑㅓㅕㅗㅛㅜㅠㅡㅣ', out = [];
   for (var i = 0; i < cs.length; i++) for (var j = 0; j < vs.length; j++) {
     out.push(HT.composeBlock({ c: cs[i], v: vs[j], f: '' }));
   }
@@ -119,15 +120,18 @@ HT.THEMES = [
     ['축하해', 'chu-ka-hae', 'congratulations', '🎉']
   ] }
 ];
-HT.WORD_INDEX = {};
-HT.ALL_WORDS = [];
-HT.THEMES.forEach(function (th) {
-  th.words.forEach(function (w) {
-    var item = { text: w[0], rom: w[1], en: w[2], emoji: w[3], theme: th.id };
-    HT.WORD_INDEX[w[0]] = item;
-    HT.ALL_WORDS.push(item);
+HT.buildWordIndex = function () {
+  HT.WORD_INDEX = {};
+  HT.ALL_WORDS = [];
+  HT.THEMES.forEach(function (th) {
+    th.words.forEach(function (w) {
+      var item = { text: w[0], rom: w[1], en: w[2], emoji: w[3], theme: th.id };
+      HT.WORD_INDEX[w[0]] = item;
+      HT.ALL_WORDS.push(item);
+    });
   });
-});
+};
+HT.buildWordIndex();
 
 HT.SENTENCES = [
   ['나는 사과를 좋아해요', 'I like apples.'], ['우리 집에 강아지가 있어요', 'There is a puppy at my house.'],

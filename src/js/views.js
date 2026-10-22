@@ -96,7 +96,7 @@ HT.Views.keysMenu = function () {
   view.innerHTML = '<div class="bar"><button type="button" class="btn small" data-back>← ' + HT.esc(HT.t('back')) + '</button><h2>' + HT.esc(HT.t('keys')) + '</h2></div>' +
     '<div class="cards stages">' + HT.STAGES.map(function (s, i) {
       return '<button type="button" class="mode-card stage" data-stage="' + i + '"><span class="st-no">' + HT.esc(HT.t('stage')) + ' ' + (i + 1) + '</span>' +
-        '<span class="glyph small">' + (s.jamo ? s.jamo.split('').join(' ') : '가 나 다') + '</span>' +
+        '<span class="glyph small">' + (s.jamo ? s.jamo.split('').join(' ') : s.syl === 'batchim' ? '각 난 달' : '가 나 다') + '</span>' +
         '<span class="mc-t">' + HT.esc(HT.L(s.ko, s.en)) + '</span>' + HT.starsHTML(d.stars['keys-' + s.id] || 0) + '</button>';
     }).join('') + '</div>';
   view.onclick = function (e) {
@@ -142,7 +142,7 @@ HT.noRepeatNeighbors = function (list) {
 HT.startKeysStage = function (idx) {
   var C = HT.CONFIG.practice, st = HT.STAGES[idx], items;
   if (!st.jamo) {
-    items = HT.shuffle(HT.SYLLABLES).slice(0, 12).map(function (s) { return { text: s }; });
+    items = HT.shuffle(st.syl === 'batchim' ? HT.SYLLABLES_B : HT.SYLLABLES).slice(0, 12).map(function (s) { return { text: s }; });
   } else {
     var pool = st.jamo.split(''), prev = HT.STAGES.slice(0, idx).map(function (s) { return s.jamo; }).join('').split('').filter(Boolean);
     var nReview = prev.length ? Math.round(C.keysPerStage * C.reviewRatio) : 0, list = [];

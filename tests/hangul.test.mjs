@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 const ctx = { console };
 ctx.globalThis = ctx;
 vm.createContext(ctx);
-for (const f of ['config', 'hangul', 'data', 'data-stories']) vm.runInContext(readFileSync(new URL(`../src/js/${f}.js`, import.meta.url), 'utf8'), ctx);
+for (const f of ['config', 'hangul', 'data', 'data-stories', 'data-words2']) vm.runInContext(readFileSync(new URL(`../src/js/${f}.js`, import.meta.url), 'utf8'), ctx);
 const HT = ctx.HT;
 
 function type(keys) {
@@ -24,7 +24,7 @@ let n = 0;
 for (const [keys, want] of cases) { assert.equal(type(keys), want, `${keys} → ${want}`); n++; }
 
 // 모든 낱말/문장: 정답 키 순서대로 치면 정확히 그 글자가 나와야 함 (힌트와 판정이 맞물리는지 확인)
-const all = [...HT.ALL_WORDS.map((w) => w.text), ...HT.SENTENCES.map((s) => s.text), ...HT.SYLLABLES, ...HT.STORIES.flatMap((s) => s.lines)];
+const all = [...HT.ALL_WORDS.map((w) => w.text), ...HT.SENTENCES.map((s) => s.text), ...HT.SYLLABLES, ...HT.SYLLABLES_B, ...HT.STORIES.flatMap((s) => s.lines)];
 for (const text of all) {
   const keys = HT.keysOf(text);
   const h = new HT.Hangul();
@@ -40,6 +40,7 @@ const PUNCT = new Set(['.', ',', '!', '?', '"']);
 for (const text of all) for (const k of HT.keysOf(text)) if (k !== ' ' && !PUNCT.has(k)) assert.ok(HT.JAMO2KEY[k], `no key for "${k}" in ${text}`);
 // 같은 낱말이 두 번 들어가지 않았는지
 const seen = new Set();
+const seenS = new Set(); for (const x of HT.SENTENCES) { assert.ok(!seenS.has(x.text), `duplicate sentence ${x.text}`); seenS.add(x.text); }
 for (const w of HT.ALL_WORDS) { assert.ok(!seen.has(w.text), `duplicate word ${w.text}`); seen.add(w.text); }
 for (const w of HT.ALL_WORDS) assert.ok(w.rom && w.en && w.emoji, `missing field ${w.text}`);
-console.log(`ok ${n} checks`);
+console.log(`ok ${n} checks · words ${HT.ALL_WORDS.length} · sentences ${HT.SENTENCES.length} · syllables ${HT.SYLLABLES.length + HT.SYLLABLES_B.length} · stories ${HT.STORIES.length}`);

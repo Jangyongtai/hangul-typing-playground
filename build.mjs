@@ -4,7 +4,7 @@
 // 사용법: node build.mjs
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 
-const JS_ORDER = ['config', 'hangul', 'data', 'data-stories', 'audio', 'store', 'ui', 'views', 'views-story', 'game-falling', 'game-race', 'app'];
+const JS_ORDER = ['config', 'hangul', 'data', 'data-stories', 'data-words2', 'audio', 'store', 'ui', 'views', 'views-story', 'game-falling', 'game-race', 'app'];
 const read = (p) => readFileSync(new URL(p, import.meta.url), 'utf8');
 
 const css = read('./src/styles.css');

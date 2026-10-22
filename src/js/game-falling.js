@@ -8,11 +8,11 @@ HT.FONT_PIXEL = "'Press Start 2P', 'Courier New', monospace";
 HT.BALLOON_COLORS = ['#FF004D', '#29ADFF', '#00B543', '#FF77A8', '#FFA300', '#83769C'];
 
 // 게임에 나올 단어 묶음
-HT.gamePool = function (content) {
+HT.gamePool = function (content, level) {
   if (content === 'jamo') {
     return 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎㅏㅑㅓㅕㅗㅛㅜㅠㅡㅣㅐㅔ'.split('').map(function (j) { return { text: j, sub: '[' + HT.JINFO[j][1] + ']', say: HT.JINFO[j][0] }; });
   }
-  if (content === 'syl') return HT.SYLLABLES.map(function (s) { return { text: s, say: s }; });
+  if (content === 'syl') return (level >= 3 ? HT.SYLLABLES.concat(HT.SYLLABLES_B) : HT.SYLLABLES).map(function (s) { return { text: s, say: s }; });
   return HT.ALL_WORDS.filter(function (w) { return w.text.indexOf(' ') < 0; })
     .map(function (w) { return { text: w.text, sub: w.en, emoji: w.emoji, say: w.text, word: true }; });
 };
@@ -72,7 +72,7 @@ HT.Views.game = function (kind) {
     return G.ents.some(function (e) { return HT.isPrefix(keys, e.keys) || HT.isPrefix(e.keys, keys); });
   }
   function spawn() {
-    var pool = HT.gamePool(cfg.content), item = null, missedWords = Object.keys(P.missed);
+    var pool = HT.gamePool(cfg.content, G.level), item = null, missedWords = Object.keys(P.missed);
     for (var tries = 0; tries < 12 && !item; tries++) {
       var cand = (cfg.content === 'word' && missedWords.length && Math.random() < 0.25)
         ? pool.filter(function (p) { return p.text === HT.pick(missedWords); })[0] : HT.pick(pool);
