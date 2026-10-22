@@ -4,7 +4,7 @@
 // 사용법: node build.mjs
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 
-const JS_ORDER = ['config', 'hangul', 'data', 'data-stories', 'data-words2', 'audio', 'store', 'ui', 'views', 'views-story', 'game-falling', 'game-race', 'app'];
+const JS_ORDER = ['config', 'hangul', 'data', 'data-stories', 'data-words2', 'audio', 'store', 'ui', 'art', 'views', 'views-story', 'game-falling', 'game-race', 'app'];
 const read = (p) => readFileSync(new URL(p, import.meta.url), 'utf8');
 
 const css = read('./src/styles.css');
@@ -18,6 +18,8 @@ const full = `<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data: blob:; media-src 'none'; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
 </head>
 <body>
 ${fragment}

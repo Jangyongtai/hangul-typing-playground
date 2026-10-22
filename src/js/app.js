@@ -19,7 +19,7 @@ HT.go = function (name, arg) {
 HT.renderHeader = function () {
   var s = HT.Store.settings(), p = HT.Store.profile();
   HT.$('#top-actions').innerHTML =
-    (p ? '<button type="button" class="btn small who" id="hd-who" title="' + HT.esc(HT.t('change')) + '">' + p.avatar + ' ' + HT.esc(p.name) + '</button>' : '') +
+    (p ? '<button type="button" class="btn small who" id="hd-who" title="' + HT.esc(HT.t('change')) + '">' + HT.esc(p.avatar) + ' ' + HT.esc(p.name) + '</button>' : '') +
     '<button type="button" class="btn small" id="hd-lang">' + HT.esc(HT.t('langToggle')) + '</button>' +
     '<button type="button" class="btn small toggle" id="hd-sfx" aria-pressed="' + (s.sound !== false) + '" title="' + HT.esc(HT.t('soundFx')) + '">' + (s.sound !== false ? '🔊' : '🔇') + '</button>' +
     '<button type="button" class="btn small toggle" id="hd-say" aria-pressed="' + (s.speech !== false) + '" title="' + HT.esc(HT.t('readAloud')) + '">🗣️</button>';

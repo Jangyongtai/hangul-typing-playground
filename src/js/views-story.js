@@ -10,7 +10,7 @@ HT.isTypable = function (ch) {
 
 HT.Views.storyMenu = function () {
   var view = HT.$('#view'), d = HT.Store.data(), C = HT.CONFIG.story;
-  var minutes = d.gameCfg.storyMin || C.defaultMinutes;
+  var minutes = HT.pickAllowed(d.gameCfg.storyMin, C.minuteChoices, C.defaultMinutes);
   view.innerHTML = '<div class="bar"><button type="button" class="btn small" data-back>← ' + HT.esc(HT.t('back')) + '</button><h2>' + HT.esc(HT.t('story')) + '</h2></div>' +
     '<div class="panel story-opts"><span class="lbl">' + HT.esc(HT.t('timeSel')) + '</span>' +
     HT.segmented('st-min', C.minuteChoices.map(function (m) { return [String(m), HT.t('minutes', { n: m })]; }), String(minutes)) + '</div>' +

@@ -18,8 +18,14 @@ HT.Store = {
     try { db = JSON.parse(localStorage.getItem(this.KEY)); } catch (e) { db = null; }
     if (!db || typeof db !== 'object') db = {};
     db.settings = db.settings || {};
-    db.profiles = Array.isArray(db.profiles) ? db.profiles : [];
-    db.data = db.data || {};
+    // 저장된 내용은 믿지 않고 모양을 확인한 뒤 씁니다
+    db.settings = typeof db.settings === 'object' && db.settings ? db.settings : {};
+    db.profiles = (Array.isArray(db.profiles) ? db.profiles : []).filter(function (p) {
+      return p && typeof p.id === 'string' && /^p[a-z0-9]{1,24}$/.test(p.id) && typeof p.name === 'string';
+    }).map(function (p) {
+      return { id: p.id, name: HT.cleanName(p.name) || '?', avatar: HT.AVATARS.indexOf(p.avatar) >= 0 ? p.avatar : HT.AVATARS[0], created: +p.created || 0 };
+    });
+    db.data = typeof db.data === 'object' && db.data ? db.data : {};
     var self = this;
     db.profiles.forEach(function (p) {
       db.data[p.id] = HT.deepMerge(self.blankProfileData(), db.data[p.id] || {});
@@ -47,6 +53,8 @@ HT.Store = {
 
   addProfile: function (name, avatar) {
     var id = 'p' + Date.now().toString(36) + Math.floor(Math.random() * 1e4).toString(36);
+    name = HT.cleanName(name);
+    if (HT.AVATARS.indexOf(avatar) < 0) avatar = HT.AVATARS[0];
     this.db.profiles.push({ id: id, name: name, avatar: avatar, created: Date.now() });
     this.db.data[id] = this.blankProfileData();
     this.db.current = id;
@@ -91,6 +99,11 @@ HT.Store = {
     var s = this.data().stars;
     return Object.keys(s).reduce(function (a, k) { return a + (s[k] || 0); }, 0);
   }
+};
+
+// 이름: 보이지 않는 제어 문자와 꺾쇠를 빼고 10글자까지
+HT.cleanName = function (s) {
+  return String(s || '').replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200F\u2028-\u202E<>]/g, '').trim().slice(0, 10);
 };
 
 HT.dayKey = function (dt) {

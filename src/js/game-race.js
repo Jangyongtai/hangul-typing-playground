@@ -5,7 +5,13 @@ HT.Views = HT.Views || {};
 
 HT.Views.race = function () {
   var view = HT.$('#view'), C = HT.CONFIG.race, P = HT.Store.data(), prof = HT.Store.profile(), ime = new HT.Hangul();
-  var cfg = Object.assign({ content: 'word', diff: 'normal', dist: 'normal', hint: true }, P.gameCfg.race || {});
+  var saved = P.gameCfg.race || {};
+  var cfg = {
+    content: HT.pickAllowed(saved.content, ['word', 'sent'], 'word'),
+    diff: HT.pickAllowed(saved.diff, ['easy', 'normal', 'hard'], 'normal'),
+    dist: HT.pickAllowed(saved.dist, ['short', 'normal', 'long'], 'normal'),
+    hint: saved.hint !== false
+  };
   var canvas, ctx, W = 800, H = 360, raf = 0, last = 0;
   var R = null, hintCache, typedCache, hudCache;
 
@@ -131,62 +137,77 @@ HT.Views.race = function () {
 
   // ---- 그리기 ----
   function draw() {
-    var x0 = W < 600 ? 92 : 130, x1 = W - 36, top = 26, laneH = (H - top - 14) / R.racers.length;
-    ctx.fillStyle = '#00B543'; ctx.fillRect(0, 0, W, H);
-    ctx.fillStyle = '#008751'; for (var gx = 0; gx < W; gx += 20) ctx.fillRect(gx, 0, 10, 8);
-    // 관중석 대신 상단 깃발
-    var flagCols = ['#FF004D', '#FFEC27', '#29ADFF', '#FF77A8'];
-    for (var f = 0; f < W; f += 28) { ctx.fillStyle = flagCols[(f / 28) % 4]; ctx.beginPath(); ctx.moveTo(f, 10); ctx.lineTo(f + 22, 10); ctx.lineTo(f + 11, 22); ctx.fill(); }
+    var narrow = W < 600, x0 = narrow ? 96 : 140, x1 = W - 44, top = 34, bottom = H - 16, laneH = (bottom - top) / R.racers.length;
+    // 잔디 (줄무늬)
+    ctx.fillStyle = '#8ED27A'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#84CB70'; for (var s = 0; s < W; s += 56) ctx.fillRect(s, 0, 28, H);
+    // 위쪽 응원 깃발 줄
+    ctx.strokeStyle = 'rgba(107,78,53,0.4)'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(0, 8); for (var q = 0; q <= W; q += 40) ctx.quadraticCurveTo(q + 20, 18, q + 40, 8); ctx.stroke();
+    var flagCols = ['#F7877A', '#FFD964', '#6CC3EE', '#B9A6F2', '#7CC56B'];
+    for (var f = 10, n = 0; f < W; f += 40, n++) {
+      ctx.fillStyle = flagCols[n % 5];
+      ctx.beginPath(); ctx.moveTo(f + 4, 12); ctx.lineTo(f + 26, 12); ctx.lineTo(f + 15, 27); ctx.closePath(); ctx.fill();
+    }
+    // 트랙
+    ctx.fillStyle = '#E8A27C';
+    HT.Art.roundRect(ctx, 6, top, W - 12, bottom - top, 18); ctx.fill();
     R.racers.forEach(function (r, i) {
       var y = top + i * laneH;
-      ctx.fillStyle = r.me ? '#C75B3A' : '#AB5236'; ctx.fillRect(0, y, W, laneH - 2);
-      ctx.fillStyle = 'rgba(255,241,232,0.8)'; ctx.fillRect(0, y + laneH - 3, W, 2);
+      if (r.me) { ctx.fillStyle = 'rgba(255, 217, 100, 0.35)'; ctx.fillRect(6, y, W - 12, laneH); }
+      if (i > 0) {
+        ctx.strokeStyle = 'rgba(255, 252, 242, 0.85)'; ctx.lineWidth = 2; ctx.setLineDash([14, 10]);
+        ctx.beginPath(); ctx.moveTo(x0 - 10, y); ctx.lineTo(W - 12, y); ctx.stroke(); ctx.setLineDash([]);
+      }
       // 이름표
+      var tagW = x0 - 22, tagH = Math.min(laneH - 10, 44), ty = y + laneH / 2;
+      ctx.fillStyle = r.me ? '#FFD964' : '#FFFCF2';
+      HT.Art.roundRect(ctx, 12, ty - tagH / 2, tagW, tagH, tagH / 2); ctx.fill();
       ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-      ctx.font = Math.round(laneH * 0.3) + 'px ' + HT.FONT_KO;
-      ctx.fillStyle = r.me ? '#FFEC27' : '#FFF1E8';
-      ctx.fillText((r.me ? '★ ' : '') + r.name, 8, y + laneH * 0.36);
-      ctx.font = Math.round(laneH * 0.2) + 'px ' + HT.FONT_KO;
-      ctx.fillStyle = 'rgba(255,241,232,0.85)';
-      var kpmTxt = r.me ? (liveKpm() + ' ' + HT.t('speedUnit')) : (r.kpm + ' ' + HT.t('speedUnit'));
-      ctx.fillText(kpmTxt, 8, y + laneH * 0.72);
+      ctx.font = Math.round(tagH * 0.38) + 'px ' + HT.FONT_KO; ctx.fillStyle = '#6B4E35';
+      ctx.fillText(r.name, 24, ty - tagH * 0.16, tagW - 20);
+      ctx.font = Math.round(tagH * 0.26) + 'px ' + HT.FONT_KO; ctx.fillStyle = '#9A7F63';
+      var kpmTxt = (r.me ? liveKpm() : r.kpm) + ' ' + HT.t('speedUnit');
+      ctx.fillText(kpmTxt, 24, ty + tagH * 0.22, tagW - 20);
     });
-    // 출발선, 결승선
-    ctx.fillStyle = '#FFF1E8'; ctx.fillRect(x0 - 2, top, 3, H - top - 14);
-    for (var cy = top, n = 0; cy < H - 14; cy += 8, n++) {
-      ctx.fillStyle = n % 2 ? '#1D2B53' : '#FFFFFF'; ctx.fillRect(x1, cy, 8, 8);
-      ctx.fillStyle = n % 2 ? '#FFFFFF' : '#1D2B53'; ctx.fillRect(x1 + 8, cy, 8, 8);
+    // 출발선, 결승선 (체크무늬)
+    ctx.fillStyle = 'rgba(255, 252, 242, 0.9)'; ctx.fillRect(x0 - 2, top, 4, bottom - top);
+    for (var cy = top, k = 0; cy < bottom; cy += 9, k++) {
+      ctx.fillStyle = k % 2 ? '#6B4E35' : '#FFFCF2'; ctx.fillRect(x1, cy, 9, Math.min(9, bottom - cy));
+      ctx.fillStyle = k % 2 ? '#FFFCF2' : '#6B4E35'; ctx.fillRect(x1 + 9, cy, 9, Math.min(9, bottom - cy));
     }
     // 먼지
     R.dust.forEach(function (d) {
-      var i = R.racers.indexOf(d.lane), y = top + i * laneH + laneH * 0.7;
-      ctx.globalAlpha = d.life * 1.4; ctx.fillStyle = '#FFE0B0';
-      ctx.fillRect(x0 + d.x * (x1 - x0) - 22 - (0.5 - d.life) * 40, y, 5, 5);
+      var i = R.racers.indexOf(d.lane), y = top + i * laneH + laneH * 0.72;
+      ctx.globalAlpha = d.life * 1.2; ctx.fillStyle = '#FFF3E0';
+      ctx.beginPath(); ctx.arc(x0 + d.x * (x1 - x0) - 24 - (0.5 - d.life) * 40, y, 4 + (0.5 - d.life) * 8, 0, Math.PI * 2); ctx.fill();
     });
     ctx.globalAlpha = 1;
     // 선수
     R.racers.forEach(function (r, i) {
-      var y = top + i * laneH + laneH * 0.48, x = x0 + r.shown * (x1 - x0 - 10);
-      var running = R.state === 'run' && !r.fin && !(r.stumble > 0) && (r.me ? true : true);
-      var bob = running ? Math.abs(Math.sin(R.t * 14 + i)) * laneH * 0.12 : 0;
-      var size = Math.round(laneH * 0.62);
+      var y = top + i * laneH + laneH * 0.5, x = x0 + 12 + r.shown * (x1 - x0 - 24);
+      var running = R.state === 'run' && !r.fin && !(r.stumble > 0);
+      var bob = running ? Math.abs(Math.sin(R.t * 13 + i * 1.7)) * laneH * 0.12 : 0;
+      var size = Math.round(laneH * 0.6);
+      ctx.fillStyle = 'rgba(107, 78, 53, 0.22)';
+      ctx.beginPath(); ctx.ellipse(x, y + size * 0.42, size * 0.38 - bob * 0.3, size * 0.1, 0, 0, Math.PI * 2); ctx.fill();
       ctx.save(); ctx.translate(x, y - bob); ctx.scale(-1, 1);
       if (r.stumble > 0) ctx.rotate(0.6);
-      ctx.font = size + 'px ' + HT.FONT_EMOJI; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillText(r.emoji, 0, 0);
+      HT.Art.emoji(ctx, r.emoji, 0, 0, size);
       ctx.restore();
-      if (r.stumble > 0) { ctx.font = Math.round(size * 0.5) + 'px ' + HT.FONT_EMOJI; ctx.fillText('💫', x, y - size * 0.6); }
+      if (r.stumble > 0) HT.Art.emoji(ctx, '💫', x, y - size * 0.62, Math.round(size * 0.5));
       if (r.fin) {
         var place = placeOf(r);
-        ctx.font = Math.round(size * 0.55) + 'px ' + HT.FONT_EMOJI; ctx.textAlign = 'center';
-        ctx.fillText(place === 1 ? '🥇' : place === 2 ? '🥈' : place === 3 ? '🥉' : '🏅', x - size * 0.9, y);
+        HT.Art.emoji(ctx, place === 1 ? '🥇' : place === 2 ? '🥈' : place === 3 ? '🥉' : '🏅', x - size * 0.95, y, Math.round(size * 0.55));
       }
     });
     if (R.state === 'count') {
-      var n2 = Math.ceil(R.cd), txt = n2 > 0 ? String(n2) : HT.t('go');
-      ctx.font = Math.round(H * 0.22) + 'px ' + HT.FONT_PIXEL + ', ' + HT.FONT_KO; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.lineWidth = 10; ctx.strokeStyle = '#1D2B53'; ctx.strokeText(txt, W / 2, H / 2);
-      ctx.fillStyle = '#FFEC27'; ctx.fillText(txt, W / 2, H / 2);
+      var n2 = Math.ceil(R.cd), txt = n2 > 0 ? String(n2) : HT.t('go'), sz = Math.round(H * 0.24);
+      var pulse = 1 + (R.cd % 1) * 0.25;
+      ctx.save(); ctx.translate(W / 2, H / 2); ctx.scale(pulse, pulse);
+      HT.Art.bubble(ctx, 0, 0, Math.max(sz * 1.6, sz * txt.length * 0.75), sz * 1.3, '#FFD964', null);
+      HT.Art.label(ctx, txt, 0, 4, sz, '#6B4E35', null);
+      ctx.restore();
     }
   }
 
@@ -279,7 +300,7 @@ HT.Views.race = function () {
     ov.innerHTML = '<div class="ov-box"><h3>' + HT.esc(HT.t('raceDone')) + '</h3>' +
       '<p class="place">' + (place === 1 ? '🥇' : place === 2 ? '🥈' : place === 3 ? '🥉' : '🏅') + ' ' + HT.esc(HT.t('rank', { n: place })) + '</p>' +
       '<ol class="podium">' + order.map(function (r) {
-        return '<li' + (r.me ? ' class="me"' : '') + '><span>' + r.emoji + ' ' + HT.esc(r.name) + '</span><small>' + (r.me ? kpm : r.kpm) + ' ' + HT.esc(HT.t('speedUnit')) + '</small></li>';
+        return '<li' + (r.me ? ' class="me"' : '') + '><span>' + HT.esc(r.emoji) + ' ' + HT.esc(r.name) + '</span><small>' + (r.me ? kpm : r.kpm) + ' ' + HT.esc(HT.t('speedUnit')) + '</small></li>';
       }).join('') + '</ol>' +
       '<div class="statbar"><div class="stat"><small>' + HT.esc(HT.t('yourSpeed')) + '</small><b>' + kpm + '</b></div>' +
       '<div class="stat"><small>' + HT.esc(HT.t('acc')) + '</small><b>' + acc + '%</b></div></div>' +

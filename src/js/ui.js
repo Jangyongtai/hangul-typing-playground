@@ -184,3 +184,6 @@ HT.bindSegmented = function (root, id, onChange) {
     onChange(b.dataset.v);
   });
 };
+
+// 저장된 설정값이 허용된 값인지 확인 (아니면 기본값)
+HT.pickAllowed = function (v, allowed, def) { return allowed.indexOf(v) >= 0 ? v : def; };

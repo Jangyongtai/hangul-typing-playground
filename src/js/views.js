@@ -9,7 +9,7 @@ HT.Views.profiles = function () {
     view.innerHTML = '<section class="panel profiles">' +
       '<h2>' + HT.esc(HT.t('whoPlays')) + '</h2>' +
       '<div class="profile-grid">' + db.profiles.map(function (p) {
-        return '<div class="profile-card"><button type="button" class="pf-use" data-id="' + p.id + '"><span class="pf-av">' + p.avatar +
+        return '<div class="profile-card"><button type="button" class="pf-use" data-id="' + p.id + '"><span class="pf-av">' + HT.esc(p.avatar) +
           '</span><span class="pf-name">' + HT.esc(p.name) + '</span></button>' +
           (confirmId === p.id
             ? '<div class="pf-confirm"><small>' + HT.esc(HT.t('delConfirm')) + '</small><button type="button" class="btn small danger pf-yes" data-id="' + p.id + '">' + HT.esc(HT.t('yesDel')) + '</button><button type="button" class="btn small pf-no">' + HT.esc(HT.t('cancel')) + '</button></div>'
@@ -42,9 +42,9 @@ HT.Views.profiles = function () {
   };
   view.onsubmit = function (e) {
     e.preventDefault();
-    var name = HT.$('#pf-name').value.trim();
+    var name = HT.cleanName(HT.$('#pf-name').value);
     if (!name) { var er = HT.$('#pf-err'); er.textContent = HT.t('nameNeeded'); er.hidden = false; return; }
-    HT.Store.addProfile(name.slice(0, 10), avatar);
+    HT.Store.addProfile(name, avatar);
     HT.Sfx.star();
     HT.go('home');
   };
@@ -60,7 +60,7 @@ HT.Views.home = function () {
       '<span class="mc-t">' + HT.esc(title) + '</span><span class="mc-d">' + HT.esc(desc) + '</span>' + (extra || '') + '</button>';
   }
   view.innerHTML =
-    '<section class="hero"><div class="mascot" aria-hidden="true">' + p.avatar + '</div>' +
+    '<section class="hero"><div class="mascot" aria-hidden="true">' + HT.esc(p.avatar) + '</div>' +
     '<p class="bubble">' + HT.esc(HT.t('hello', { name: p.name })) + '</p></section>' +
     '<section class="statbar">' +
     '<div class="stat"><small>' + HT.esc(HT.t('streak')) + '</small><b>🔥 ' + HT.esc(HT.t('days', { n: d.streak })) + '</b></div>' +

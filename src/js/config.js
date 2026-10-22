@@ -78,11 +78,14 @@ HT.loadConfig = function () {
 HT.deepMerge = function (target, src) {
   if (!src || typeof src !== 'object') return target;
   Object.keys(src).forEach(function (k) {
+    // 저장된 값을 조작해 객체 기본 동작을 바꾸는 공격(prototype pollution) 차단
+    if (k === '__proto__' || k === 'constructor' || k === 'prototype') return;
+    if (!Object.prototype.hasOwnProperty.call(target, k)) return;
     var v = src[k];
     if (v && typeof v === 'object' && !Array.isArray(v) && target[k] && typeof target[k] === 'object' && !Array.isArray(target[k])) {
       HT.deepMerge(target[k], v);
-    } else if (k in target) {
-      target[k] = v;
+    } else if (typeof v === typeof target[k] || target[k] === null) {
+      target[k] = v; // 숫자 자리에 글자처럼 다른 종류 값은 무시
     }
   });
   return target;
