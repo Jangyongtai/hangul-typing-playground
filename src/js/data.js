@@ -199,7 +199,7 @@ HT.PRAISE = [['잘했어요!', 'Great!'], ['최고!', 'Awesome!'], ['멋져요!'
 
 // 화면 문구 [한국어, 영어]
 HT.T = {
-  appName: ['한글 타자 놀이터', 'Hangul Typing Playground'],
+  appName: ['한글톡톡', 'Hangul TokTok'],
   hello: ['안녕, {name}! 오늘도 같이 한글 타자 놀이 하자!', "Hi {name}! Let's play with Hangul typing!"],
   practice: ['연습하기', 'Practice'], games: ['게임', 'Games'],
   keys: ['자리 익히기', 'Learn the keys'], keysDesc: ['자판 위치와 손가락 익히기', 'Find each letter on the keyboard'],
@@ -237,5 +237,10 @@ HT.T = {
   raceDone: ['결승선 도착!', 'Finish!'], yourSpeed: ['내 속도', 'Your speed'], rivals: ['상대 선수', 'Rivals'],
   rivalNote: ['상대 속도는 내 평균 타수 {n}타에 맞춰져요', 'Rivals are matched to your average of {n} keys/min'],
   langToggle: ['English', '한국어'], debug: ['디버그', 'Debug'],
+  story: ['동화 긴 글', 'Story typing'], storyDesc: ['동화 한 편을 5분 동안 쳐 봐요', 'Type a whole fairy tale in 5 minutes'],
+  timeSel: ['시간', 'Time'], minutes: ['{n}분', '{n} min'], timeLeft: ['남은 시간', 'Time left'],
+  timeUp: ['시간 끝!', "Time's up!"], storyDone: ['동화를 다 쳤어요!', 'You finished the story!'],
+  linesDone: ['{m}줄 중 {n}줄 완성', '{n} of {m} lines done'],
+  punctNote: ['문장부호( . , ! ? " )는 자동으로 채워져요', 'Punctuation ( . , ! ? " ) fills in by itself'],
   practiceNote: ['틀린 키는 안 들어가요. 맞는 키를 찾아봐요!', 'Wrong keys are ignored. Find the right one!']
 };

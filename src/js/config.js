@@ -13,6 +13,10 @@ HT.DEFAULT_CONFIG = {
     nextDelayMs: { keys: 250, words: 750, sent: 950 },
     stars: { three: 95, two: 80 } // 정확도(%) 기준 별 개수
   },
+  story: {
+    minuteChoices: [1, 3, 5], // 동화 긴 글 시간 선택지(분)
+    defaultMinutes: 5        // 기본 5분 검정
+  },
   score: { perKey: 10, comboStep: 0.1, comboMaxMul: 3 },
   rain: {
     lives: 5,
