@@ -38,6 +38,13 @@ HT.Views.game = function (kind) {
     '<button type="button" class="btn small toggle" id="gv-hint" aria-pressed="' + cfg.hint + '">💡 ' + HT.esc(HT.t('hint')) + '</button></div>' +
     '<p class="hintline" id="gv-hintline">&nbsp;</p><div id="gv-kb"></div></section>';
   canvas = HT.$('#gv-canvas'); ctx = canvas.getContext('2d');
+  if (HT.layout === 'pc') {
+    // PC: 입력칸(크기 고정)과 힌트를 제목 줄로 올려서 게임 화면을 가리지 않고 자판도 밀리지 않게
+    var dock = document.createElement('div');
+    dock.className = 'game-dock';
+    dock.appendChild(HT.$('.gv .gin')); dock.appendChild(HT.$('#gv-hintline'));
+    HT.$('.gv .bar').insertBefore(dock, HT.$('#gv-hud'));
+  }
   var kb = HT.Keyboard(HT.$('#gv-kb'), onKey, { enter: true });
 
   function newState() {
@@ -48,9 +55,10 @@ HT.Views.game = function (kind) {
 
   // ---- 크기 ----
   function resize() {
-    var cssW = HT.$('#gv-frame').clientWidth || 800, narrow = HT.layout !== 'pc' && cssW < 600;
-    W = narrow ? 480 : 800; FS = narrow ? 30 : 34;
-    var cssH = narrow ? Math.min(cssW * 1.0, innerHeight * 0.46) : HT.layout === 'pc' ? 372 : Math.min(cssW * 0.56, innerHeight * 0.56);
+    var cssW = HT.$('#gv-frame').clientWidth || 800, narrow = HT.layout !== 'pc' && cssW < 600, pc = HT.layout === 'pc';
+    // PC: 화면 픽셀 그대로 그리고(W = 실제 폭) 글자는 작게 → 한 줄에 단어 10개 이상
+    W = narrow ? 480 : pc ? Math.round(cssW) : 800; FS = narrow ? 30 : pc ? HT.CONFIG.view.pcGameFont : 34;
+    var cssH = narrow ? Math.min(cssW * 1.0, innerHeight * 0.46) : pc ? HT.CONFIG.view.pcGameHeight : Math.min(cssW * 0.56, innerHeight * 0.56);
     cssH = Math.max(cssH, 230);
     H = Math.round(W * cssH / cssW);
     canvas.style.height = cssH + 'px';
@@ -88,17 +96,29 @@ HT.Views.game = function (kind) {
     var w = textW(e);
     var v = 0;
     if (kind === 'rain') {
-      e.w = w; e.x = HT.rand(16 + w / 2, W - 16 - w / 2); e.y = -FS * 0.6;
+      e.w = w; e.x = freeX(w / 2 + FS * 0.6, function (o) { return o.y < FS * 4; }, function (o) { return o.w / 2 + FS * 0.6; }); e.y = -FS * 0.6;
       v = (H - 34) / travelSeconds();
     } else {
       e.r = Math.max(e.emoji ? FS * 1.7 : FS * 1.3, w / 2 + 18);
-      e.x = HT.rand(e.r + 12, W - e.r - 12); e.y = H + e.r * 1.2;
+      e.x = freeX(e.r + 12, function (o) { return o.y > H - o.r * 2; }, function (o) { return o.r + 22; }); e.y = H + e.r * 1.2;
       e.ph = Math.random() * 6; e.amp = HT.rand(8, 18); e.wf = HT.rand(0.8, 1.6);
       e.color = e.gold ? '#FFD23F' : HT.pick(HT.BALLOON_COLORS);
       v = (H + e.r * 3.4) / travelSeconds();
     }
-    e.v = v * HT.rand(0.9, 1.1);
+    // 단어비는 모두 같은 속도라 앞 단어를 따라잡아 겹치지 않음
+    e.v = kind === 'rain' ? v : v * HT.rand(0.92, 1.08);
     G.ents.push(e);
+  }
+  // 막 나온 다른 단어와 가로로 겹치지 않는 자리 고르기
+  function freeX(half, isNear, halfOf) {
+    var best = HT.rand(half, W - half), bestGap = -1e9;
+    for (var i = 0; i < 14; i++) {
+      var x = HT.rand(half, W - half), gap = 1e9;
+      G.ents.forEach(function (o) { if (isNear(o)) gap = Math.min(gap, Math.abs(o.x - x) - halfOf(o) - half); });
+      if (gap >= 0) return x;
+      if (gap > bestGap) { bestGap = gap; best = x; }
+    }
+    return best;
   }
 
   // ---- 진행 ----
@@ -260,7 +280,7 @@ HT.Views.game = function (kind) {
     var x = e.cx == null ? e.x : e.cx, y = e.y, r = e.r, ry = r * 1.18;
     HT.Art.balloon(ctx, x, y, r, e.color, match || e.gold);
     var ty = y;
-    if (e.emoji) { HT.Art.emoji(ctx, e.emoji, x, y - ry * 0.4, Math.round(FS * 0.95)); ty = y + ry * 0.3; }
+    if (e.emoji) { HT.Art.emoji(ctx, e.emoji, x, y - ry * 0.42, Math.round(FS * 1.1)); ty = y + ry * 0.3; }
     HT.Art.label(ctx, e.text, x, ty, FS, '#FFFFFF', 'rgba(70, 50, 30, 0.55)');
     if (e.sub) HT.Art.label(ctx, e.sub, x, y + ry + r * 0.62, Math.round(FS * 0.42), '#6B4E35', '#FFFFFF');
   }

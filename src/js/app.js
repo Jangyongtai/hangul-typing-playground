@@ -51,7 +51,8 @@ HT.renderSide = function () {
   var group = { practice: 'keysMenu wordsMenu practice result storyMenu story', home: 'home' };
   el.innerHTML = '<div class="side-me"><div class="side-av" aria-hidden="true">' + HT.esc(p.avatar) + '</div>' +
     '<div class="side-name">' + HT.esc(p.name) + '</div>' +
-    '<div class="side-stats"><span>🔥 ' + HT.esc(HT.t('days', { n: d.streak })) + '</span><span>⭐ ' + HT.Store.totalStars() + '</span><span>📚 ' + d.wordsTyped + '</span></div></div>' +
+    '<div class="side-stats"><span>🔥 ' + HT.esc(HT.t('days', { n: d.streak })) + '</span><span>⭐ ' + HT.Store.totalStars() + '</span><span>📚 ' + d.wordsTyped + '</span></div>' +
+    '<button type="button" class="btn small side-switch" data-nav="profiles">👥 ' + HT.esc(HT.t('switchUser')) + '</button></div>' +
     '<nav class="side-nav">' + HT.NAV.map(function (n) {
       var on = cur === n[0] || (n[0] === 'sentence' && cur === 'practice' && HT.route.arg && HT.route.arg.kind === 'sent') ||
         (n[0] === 'storyMenu' && cur === 'story') ||

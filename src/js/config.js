@@ -17,6 +17,10 @@ HT.DEFAULT_CONFIG = {
     minuteChoices: [1, 3, 5], // 동화 긴 글 시간 선택지(분)
     defaultMinutes: 5        // 기본 5분 검정
   },
+  view: {
+    pcGameHeight: 546,       // PC 단어비·풍선 게임 화면 높이(px, 1600×900 무대 기준)
+    pcGameFont: 26           // PC 게임 글자 크기(px). 작을수록 한 줄에 더 많이 들어감
+  },
   score: { perKey: 10, comboStep: 0.1, comboMaxMul: 3 },
   rain: {
     lives: 5,

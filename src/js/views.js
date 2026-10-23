@@ -7,7 +7,8 @@ HT.Views.profiles = function () {
   var view = HT.$('#view'), db = HT.Store.db, avatar = HT.AVATARS[0], confirmId = null;
   function render() {
     view.innerHTML = '<section class="panel profiles">' +
-      '<h2>' + HT.esc(HT.t('whoPlays')) + '</h2>' +
+      '<div class="bar">' + (HT.Store.profile() ? '<button type="button" class="btn small" data-back>← ' + HT.esc(HT.t('back')) + '</button>' : '') +
+      '<h2>' + HT.esc(HT.t('whoPlays')) + '</h2></div>' +
       '<div class="profile-grid">' + db.profiles.map(function (p) {
         return '<div class="profile-card"><button type="button" class="pf-use" data-id="' + p.id + '"><span class="pf-av">' + HT.esc(p.avatar) +
           '</span><span class="pf-name">' + HT.esc(p.name) + '</span></button>' +
@@ -30,6 +31,7 @@ HT.Views.profiles = function () {
   }
   render();
   view.onclick = function (e) {
+    if (e.target.closest('[data-back]')) return HT.go('home');
     var b = e.target.closest('button'); if (!b) return;
     if (b.classList.contains('pf-use')) { HT.Sfx.click(); HT.Store.use(b.dataset.id); HT.go('home'); }
     else if (b.classList.contains('pf-del')) { confirmId = b.dataset.id; render(); }

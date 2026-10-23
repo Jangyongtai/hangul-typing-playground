@@ -638,3 +638,48 @@ h2, h3, .logo, .btn, .lbl, .bubble, .mc-t, .stat b, .meter b, .hud-i b, .seg-b, 
 .pc .mode-card.review .glyph { min-width: 64px; height: 64px; font-size: 32px; margin: 0; }
 .pc .mode-card.review .mc-t { font-size: 24px; }
 @media (max-width: 600px) { .cards.levels { grid-template-columns: 1fr; } }
+
+/* ---- PC 게임: 화면 1.5배, 입력칸은 화면 안에 고정, 자판은 작게 ---- */
+.side-switch { margin-top: 10px; width: 100%; }
+.pc .side-me { padding-bottom: 14px; }
+.pc .side-av { width: 112px; height: 112px; font-size: 70px; }
+.pc .gv-rain .screen, .pc .gv-balloon .screen { border-width: 6px; }
+.game-dock { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 1; width: 560px; display: flex; flex-direction: column; align-items: center; gap: 6px; pointer-events: none; }
+.game-dock .gin { width: 100%; margin: 0; pointer-events: auto; }
+.game-dock .typed { height: 56px; min-height: 56px; max-height: 56px; overflow: hidden; white-space: nowrap; font-size: 28px !important; background: rgba(255, 255, 255, 0.92); }
+.game-dock .gin .btn { height: 56px; }
+.game-dock .hintline { margin: 0 !important; min-height: 26px; padding: 2px 14px; border-radius: 999px; background: rgba(255, 251, 239, 0.88); font-size: 16px; }
+.game-dock .hintline kbd { font-size: 19px; }
+.pc .gv-rain .kb, .pc .gv-balloon .kb { max-width: 720px; margin-top: 12px; padding: 8px; gap: 4px; }
+.pc .gv-rain .kb-row, .pc .gv-balloon .kb-row { gap: 4px; }
+.pc .gv-rain .key, .pc .gv-balloon .key { height: 36px; border-radius: 10px; max-width: 64px; }
+.pc .gv-rain .key b, .pc .gv-balloon .key b { font-size: 18px; margin-top: 0; }
+.pc .gv-rain .key i, .pc .gv-balloon .key i { font-size: 8px; top: 2px; left: 5px; }
+.pc .gv-rain .key::before, .pc .gv-balloon .key::before, .pc .gv-rain .key.bump::after, .pc .gv-balloon .key.bump::after { display: none; }
+.pc .gv-rain .key.space, .pc .gv-balloon .key.space { max-width: 320px; font-size: 14px; }
+/* 연습 자판도 조금 작게 */
+.pc .pv .kb { max-width: 980px; padding: 12px; gap: 7px; }
+.pc .pv .kb-row { gap: 7px; }
+.pc .pv .key { height: 56px; max-width: 76px; }
+.pc .pv .key b { font-size: 26px; }
+.pc .pv > .typed { height: 140px; overflow: hidden; }
+.pc .race-target { min-height: 76px; }
+.pc .side { gap: 12px; }
+.pc .side-nav { padding: 8px 10px; }
+
+/* PC 게임: 입력칸을 제목 줄 가운데에 고정 크기로 */
+.game-dock { position: static; transform: none; width: 520px; flex: none; gap: 4px; pointer-events: auto; margin: 0 auto; }
+.game-dock .gin { display: flex; gap: 8px; }
+.game-dock .typed { height: 50px; min-height: 50px; max-height: 50px; font-size: 26px !important; background: #FFFFFF; }
+.game-dock .gin .btn { height: 50px; padding: 0 14px; }
+.game-dock .hintline { height: 24px; min-height: 24px; padding: 0 12px; font-size: 14px; line-height: 24px; overflow: hidden; white-space: nowrap; }
+.game-dock .hintline kbd { font-size: 16px; padding: 0 6px; }
+.pc .gv .bar { flex-wrap: nowrap; gap: 14px; margin-bottom: 10px; }
+.pc .gv .bar h2 { flex: none; }
+.pc .gv-rain .hud-i, .pc .gv-balloon .hud-i { min-width: 74px; padding: 3px 10px; }
+.pc .gv-rain .hud-i b, .pc .gv-balloon .hud-i b { font-size: 20px; }
+.pc .gv-rain .hearts, .pc .gv-balloon .hearts { font-size: 22px; }
+.btn { white-space: nowrap; }
+.pc .gv .hud { flex-wrap: nowrap; }
+.pc .gv .bar h2 { font-size: 26px; }
+.game-dock { width: 440px; }

@@ -260,7 +260,7 @@ HT.T = {
   whoPlays: ['누가 놀까요?', "Who's playing?"], newProfile: ['새로 만들기', 'Add player'],
   yourName: ['이름', 'Name'], pickAvatar: ['캐릭터 고르기', 'Pick a character'], create: ['만들기', 'Create'],
   cancel: ['취소', 'Cancel'], del: ['지우기', 'Delete'], delConfirm: ['정말 지울까요? 기록도 지워져요', 'Delete this player and all records?'],
-  yesDel: ['네, 지울게요', 'Yes, delete'], change: ['바꾸기', 'Switch'], nameNeeded: ['이름을 써 주세요', 'Please type a name'],
+  yesDel: ['네, 지울게요', 'Yes, delete'], change: ['바꾸기', 'Switch'], switchUser: ['사용자 바꾸기', 'Switch player'], nameNeeded: ['이름을 써 주세요', 'Please type a name'],
   rank: ['{n}등', '#{n}'], you: ['나', 'You'], ready: ['준비', 'Ready'], go: ['출발!', 'GO!'],
   raceDone: ['결승선 도착!', 'Finish!'], yourSpeed: ['내 속도', 'Your speed'], rivals: ['상대 선수', 'Rivals'],
   rivalNote: ['상대 속도는 내 평균 타수 {n}타에 맞춰져요', 'Rivals are matched to your average of {n} keys/min'],

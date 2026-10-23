@@ -654,6 +654,51 @@ h2, h3, .logo, .btn, .lbl, .bubble, .mc-t, .stat b, .meter b, .hud-i b, .seg-b, 
 .pc .mode-card.review .mc-t { font-size: 24px; }
 @media (max-width: 600px) { .cards.levels { grid-template-columns: 1fr; } }
 
+/* ---- PC 게임: 화면 1.5배, 입력칸은 화면 안에 고정, 자판은 작게 ---- */
+.side-switch { margin-top: 10px; width: 100%; }
+.pc .side-me { padding-bottom: 14px; }
+.pc .side-av { width: 112px; height: 112px; font-size: 70px; }
+.pc .gv-rain .screen, .pc .gv-balloon .screen { border-width: 6px; }
+.game-dock { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 1; width: 560px; display: flex; flex-direction: column; align-items: center; gap: 6px; pointer-events: none; }
+.game-dock .gin { width: 100%; margin: 0; pointer-events: auto; }
+.game-dock .typed { height: 56px; min-height: 56px; max-height: 56px; overflow: hidden; white-space: nowrap; font-size: 28px !important; background: rgba(255, 255, 255, 0.92); }
+.game-dock .gin .btn { height: 56px; }
+.game-dock .hintline { margin: 0 !important; min-height: 26px; padding: 2px 14px; border-radius: 999px; background: rgba(255, 251, 239, 0.88); font-size: 16px; }
+.game-dock .hintline kbd { font-size: 19px; }
+.pc .gv-rain .kb, .pc .gv-balloon .kb { max-width: 720px; margin-top: 12px; padding: 8px; gap: 4px; }
+.pc .gv-rain .kb-row, .pc .gv-balloon .kb-row { gap: 4px; }
+.pc .gv-rain .key, .pc .gv-balloon .key { height: 36px; border-radius: 10px; max-width: 64px; }
+.pc .gv-rain .key b, .pc .gv-balloon .key b { font-size: 18px; margin-top: 0; }
+.pc .gv-rain .key i, .pc .gv-balloon .key i { font-size: 8px; top: 2px; left: 5px; }
+.pc .gv-rain .key::before, .pc .gv-balloon .key::before, .pc .gv-rain .key.bump::after, .pc .gv-balloon .key.bump::after { display: none; }
+.pc .gv-rain .key.space, .pc .gv-balloon .key.space { max-width: 320px; font-size: 14px; }
+/* 연습 자판도 조금 작게 */
+.pc .pv .kb { max-width: 980px; padding: 12px; gap: 7px; }
+.pc .pv .kb-row { gap: 7px; }
+.pc .pv .key { height: 56px; max-width: 76px; }
+.pc .pv .key b { font-size: 26px; }
+.pc .pv > .typed { height: 140px; overflow: hidden; }
+.pc .race-target { min-height: 76px; }
+.pc .side { gap: 12px; }
+.pc .side-nav { padding: 8px 10px; }
+
+/* PC 게임: 입력칸을 제목 줄 가운데에 고정 크기로 */
+.game-dock { position: static; transform: none; width: 520px; flex: none; gap: 4px; pointer-events: auto; margin: 0 auto; }
+.game-dock .gin { display: flex; gap: 8px; }
+.game-dock .typed { height: 50px; min-height: 50px; max-height: 50px; font-size: 26px !important; background: #FFFFFF; }
+.game-dock .gin .btn { height: 50px; padding: 0 14px; }
+.game-dock .hintline { height: 24px; min-height: 24px; padding: 0 12px; font-size: 14px; line-height: 24px; overflow: hidden; white-space: nowrap; }
+.game-dock .hintline kbd { font-size: 16px; padding: 0 6px; }
+.pc .gv .bar { flex-wrap: nowrap; gap: 14px; margin-bottom: 10px; }
+.pc .gv .bar h2 { flex: none; }
+.pc .gv-rain .hud-i, .pc .gv-balloon .hud-i { min-width: 74px; padding: 3px 10px; }
+.pc .gv-rain .hud-i b, .pc .gv-balloon .hud-i b { font-size: 20px; }
+.pc .gv-rain .hearts, .pc .gv-balloon .hearts { font-size: 22px; }
+.btn { white-space: nowrap; }
+.pc .gv .hud { flex-wrap: nowrap; }
+.pc .gv .bar h2 { font-size: 26px; }
+.game-dock { width: 440px; }
+
 </style>
 <div class="wrap">
   <aside class="side">
@@ -687,6 +732,10 @@ HT.DEFAULT_CONFIG = {
   story: {
     minuteChoices: [1, 3, 5], // 동화 긴 글 시간 선택지(분)
     defaultMinutes: 5        // 기본 5분 검정
+  },
+  view: {
+    pcGameHeight: 546,       // PC 단어비·풍선 게임 화면 높이(px, 1600×900 무대 기준)
+    pcGameFont: 26           // PC 게임 글자 크기(px). 작을수록 한 줄에 더 많이 들어감
   },
   score: { perKey: 10, comboStep: 0.1, comboMaxMul: 3 },
   rain: {
@@ -1139,7 +1188,7 @@ HT.T = {
   whoPlays: ['누가 놀까요?', "Who's playing?"], newProfile: ['새로 만들기', 'Add player'],
   yourName: ['이름', 'Name'], pickAvatar: ['캐릭터 고르기', 'Pick a character'], create: ['만들기', 'Create'],
   cancel: ['취소', 'Cancel'], del: ['지우기', 'Delete'], delConfirm: ['정말 지울까요? 기록도 지워져요', 'Delete this player and all records?'],
-  yesDel: ['네, 지울게요', 'Yes, delete'], change: ['바꾸기', 'Switch'], nameNeeded: ['이름을 써 주세요', 'Please type a name'],
+  yesDel: ['네, 지울게요', 'Yes, delete'], change: ['바꾸기', 'Switch'], switchUser: ['사용자 바꾸기', 'Switch player'], nameNeeded: ['이름을 써 주세요', 'Please type a name'],
   rank: ['{n}등', '#{n}'], you: ['나', 'You'], ready: ['준비', 'Ready'], go: ['출발!', 'GO!'],
   raceDone: ['결승선 도착!', 'Finish!'], yourSpeed: ['내 속도', 'Your speed'], rivals: ['상대 선수', 'Rivals'],
   rivalNote: ['상대 속도는 내 평균 타수 {n}타에 맞춰져요', 'Rivals are matched to your average of {n} keys/min'],
@@ -2126,7 +2175,8 @@ HT.Views.profiles = function () {
   var view = HT.$('#view'), db = HT.Store.db, avatar = HT.AVATARS[0], confirmId = null;
   function render() {
     view.innerHTML = '<section class="panel profiles">' +
-      '<h2>' + HT.esc(HT.t('whoPlays')) + '</h2>' +
+      '<div class="bar">' + (HT.Store.profile() ? '<button type="button" class="btn small" data-back>← ' + HT.esc(HT.t('back')) + '</button>' : '') +
+      '<h2>' + HT.esc(HT.t('whoPlays')) + '</h2></div>' +
       '<div class="profile-grid">' + db.profiles.map(function (p) {
         return '<div class="profile-card"><button type="button" class="pf-use" data-id="' + p.id + '"><span class="pf-av">' + HT.esc(p.avatar) +
           '</span><span class="pf-name">' + HT.esc(p.name) + '</span></button>' +
@@ -2149,6 +2199,7 @@ HT.Views.profiles = function () {
   }
   render();
   view.onclick = function (e) {
+    if (e.target.closest('[data-back]')) return HT.go('home');
     var b = e.target.closest('button'); if (!b) return;
     if (b.classList.contains('pf-use')) { HT.Sfx.click(); HT.Store.use(b.dataset.id); HT.go('home'); }
     else if (b.classList.contains('pf-del')) { confirmId = b.dataset.id; render(); }
@@ -2631,6 +2682,13 @@ HT.Views.game = function (kind) {
     '<button type="button" class="btn small toggle" id="gv-hint" aria-pressed="' + cfg.hint + '">💡 ' + HT.esc(HT.t('hint')) + '</button></div>' +
     '<p class="hintline" id="gv-hintline">&nbsp;</p><div id="gv-kb"></div></section>';
   canvas = HT.$('#gv-canvas'); ctx = canvas.getContext('2d');
+  if (HT.layout === 'pc') {
+    // PC: 입력칸(크기 고정)과 힌트를 제목 줄로 올려서 게임 화면을 가리지 않고 자판도 밀리지 않게
+    var dock = document.createElement('div');
+    dock.className = 'game-dock';
+    dock.appendChild(HT.$('.gv .gin')); dock.appendChild(HT.$('#gv-hintline'));
+    HT.$('.gv .bar').insertBefore(dock, HT.$('#gv-hud'));
+  }
   var kb = HT.Keyboard(HT.$('#gv-kb'), onKey, { enter: true });
 
   function newState() {
@@ -2641,9 +2699,10 @@ HT.Views.game = function (kind) {
 
   // ---- 크기 ----
   function resize() {
-    var cssW = HT.$('#gv-frame').clientWidth || 800, narrow = HT.layout !== 'pc' && cssW < 600;
-    W = narrow ? 480 : 800; FS = narrow ? 30 : 34;
-    var cssH = narrow ? Math.min(cssW * 1.0, innerHeight * 0.46) : HT.layout === 'pc' ? 372 : Math.min(cssW * 0.56, innerHeight * 0.56);
+    var cssW = HT.$('#gv-frame').clientWidth || 800, narrow = HT.layout !== 'pc' && cssW < 600, pc = HT.layout === 'pc';
+    // PC: 화면 픽셀 그대로 그리고(W = 실제 폭) 글자는 작게 → 한 줄에 단어 10개 이상
+    W = narrow ? 480 : pc ? Math.round(cssW) : 800; FS = narrow ? 30 : pc ? HT.CONFIG.view.pcGameFont : 34;
+    var cssH = narrow ? Math.min(cssW * 1.0, innerHeight * 0.46) : pc ? HT.CONFIG.view.pcGameHeight : Math.min(cssW * 0.56, innerHeight * 0.56);
     cssH = Math.max(cssH, 230);
     H = Math.round(W * cssH / cssW);
     canvas.style.height = cssH + 'px';
@@ -2681,17 +2740,29 @@ HT.Views.game = function (kind) {
     var w = textW(e);
     var v = 0;
     if (kind === 'rain') {
-      e.w = w; e.x = HT.rand(16 + w / 2, W - 16 - w / 2); e.y = -FS * 0.6;
+      e.w = w; e.x = freeX(w / 2 + FS * 0.6, function (o) { return o.y < FS * 4; }, function (o) { return o.w / 2 + FS * 0.6; }); e.y = -FS * 0.6;
       v = (H - 34) / travelSeconds();
     } else {
       e.r = Math.max(e.emoji ? FS * 1.7 : FS * 1.3, w / 2 + 18);
-      e.x = HT.rand(e.r + 12, W - e.r - 12); e.y = H + e.r * 1.2;
+      e.x = freeX(e.r + 12, function (o) { return o.y > H - o.r * 2; }, function (o) { return o.r + 22; }); e.y = H + e.r * 1.2;
       e.ph = Math.random() * 6; e.amp = HT.rand(8, 18); e.wf = HT.rand(0.8, 1.6);
       e.color = e.gold ? '#FFD23F' : HT.pick(HT.BALLOON_COLORS);
       v = (H + e.r * 3.4) / travelSeconds();
     }
-    e.v = v * HT.rand(0.9, 1.1);
+    // 단어비는 모두 같은 속도라 앞 단어를 따라잡아 겹치지 않음
+    e.v = kind === 'rain' ? v : v * HT.rand(0.92, 1.08);
     G.ents.push(e);
+  }
+  // 막 나온 다른 단어와 가로로 겹치지 않는 자리 고르기
+  function freeX(half, isNear, halfOf) {
+    var best = HT.rand(half, W - half), bestGap = -1e9;
+    for (var i = 0; i < 14; i++) {
+      var x = HT.rand(half, W - half), gap = 1e9;
+      G.ents.forEach(function (o) { if (isNear(o)) gap = Math.min(gap, Math.abs(o.x - x) - halfOf(o) - half); });
+      if (gap >= 0) return x;
+      if (gap > bestGap) { bestGap = gap; best = x; }
+    }
+    return best;
   }
 
   // ---- 진행 ----
@@ -2853,7 +2924,7 @@ HT.Views.game = function (kind) {
     var x = e.cx == null ? e.x : e.cx, y = e.y, r = e.r, ry = r * 1.18;
     HT.Art.balloon(ctx, x, y, r, e.color, match || e.gold);
     var ty = y;
-    if (e.emoji) { HT.Art.emoji(ctx, e.emoji, x, y - ry * 0.4, Math.round(FS * 0.95)); ty = y + ry * 0.3; }
+    if (e.emoji) { HT.Art.emoji(ctx, e.emoji, x, y - ry * 0.42, Math.round(FS * 1.1)); ty = y + ry * 0.3; }
     HT.Art.label(ctx, e.text, x, ty, FS, '#FFFFFF', 'rgba(70, 50, 30, 0.55)');
     if (e.sub) HT.Art.label(ctx, e.sub, x, y + ry + r * 0.62, Math.round(FS * 0.42), '#6B4E35', '#FFFFFF');
   }
@@ -3370,7 +3441,8 @@ HT.renderSide = function () {
   var group = { practice: 'keysMenu wordsMenu practice result storyMenu story', home: 'home' };
   el.innerHTML = '<div class="side-me"><div class="side-av" aria-hidden="true">' + HT.esc(p.avatar) + '</div>' +
     '<div class="side-name">' + HT.esc(p.name) + '</div>' +
-    '<div class="side-stats"><span>🔥 ' + HT.esc(HT.t('days', { n: d.streak })) + '</span><span>⭐ ' + HT.Store.totalStars() + '</span><span>📚 ' + d.wordsTyped + '</span></div></div>' +
+    '<div class="side-stats"><span>🔥 ' + HT.esc(HT.t('days', { n: d.streak })) + '</span><span>⭐ ' + HT.Store.totalStars() + '</span><span>📚 ' + d.wordsTyped + '</span></div>' +
+    '<button type="button" class="btn small side-switch" data-nav="profiles">👥 ' + HT.esc(HT.t('switchUser')) + '</button></div>' +
     '<nav class="side-nav">' + HT.NAV.map(function (n) {
       var on = cur === n[0] || (n[0] === 'sentence' && cur === 'practice' && HT.route.arg && HT.route.arg.kind === 'sent') ||
         (n[0] === 'storyMenu' && cur === 'story') ||
