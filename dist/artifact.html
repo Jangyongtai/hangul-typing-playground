@@ -621,6 +621,30 @@ h2, h3, .logo, .btn, .lbl, .bubble, .mc-t, .stat b, .meter b, .hud-i b, .seg-b, 
 .pc .opt-row { flex-direction: row; justify-content: center; gap: 18px; flex-wrap: nowrap; }
 .pc .ov-box { width: min(880px, 100%); }
 
+/* 낱말 연습: 난이도 3개 */
+.cards.levels { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.mode-card.level { align-items: center; text-align: center; padding: 26px 20px; }
+.mode-card.level .glyph { font-size: 44px; min-width: 84px; height: 84px; border-radius: 28px; }
+.mode-card.level .mc-t { font-size: 26px; }
+.lv-sample { margin: 8px 0 6px; font-weight: 700; font-size: 17px; color: var(--ink); background: var(--sand); border-radius: 999px; padding: 4px 14px; }
+.cards > .mode-card.lv-easy .glyph { background: #C8F0B5; }
+.cards > .mode-card.lv-normal .glyph { background: #FFE286; }
+.cards > .mode-card.lv-hard .glyph { background: #FFC2B8; }
+.cards > .mode-card.review .glyph { background: #B5E6FF; }
+.mode-card.review { grid-column: 1 / -1; flex-direction: row; justify-content: center; gap: 16px; padding: 14px 20px; }
+.mode-card.review .glyph { min-width: 56px; height: 56px; font-size: 28px; margin: 0; }
+.pc .cards.levels { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; margin-top: 20px; }
+.pc .mode-card.level { min-height: 400px; justify-content: center; border-radius: 36px; }
+.pc .mode-card.level .glyph { font-size: 72px; min-width: 140px; height: 140px; border-radius: 44px; margin-bottom: 18px; }
+.pc .mode-card.level .mc-t { font-size: 40px; }
+.pc .mode-card.level .mc-d { font-size: 18px; }
+.pc .lv-sample { font-size: 22px; padding: 6px 18px; margin: 14px 0 10px; }
+.pc .mode-card.level .stars .st { font-size: 28px; }
+.pc .mode-card.review { min-height: 0; flex-direction: row; padding: 16px 24px; }
+.pc .mode-card.review .glyph { min-width: 64px; height: 64px; font-size: 32px; margin: 0; }
+.pc .mode-card.review .mc-t { font-size: 24px; }
+@media (max-width: 600px) { .cards.levels { grid-template-columns: 1fr; } }
+
 </style>
 <div class="wrap">
   <aside class="side">
@@ -642,7 +666,7 @@ var HT = globalThis.HT = globalThis.HT || {};
 
 HT.DEFAULT_CONFIG = {
   practice: {
-    keysPerStage: 15,        // 자리 익히기 한 단계 문제 수
+    keysPerStage: 10,        // 자리 익히기 한 단계 문제 수
     reviewRatio: 0.3,        // 이전 단계 복습 비율
     wordsPerRound: 8,        // 낱말 연습 한 판 낱말 수
     reviewInRound: 2,        // 낱말 연습에 섞어 넣을 틀렸던 낱말 수
@@ -966,6 +990,19 @@ HT.THEMES = [
     ['축하해', 'chu-ka-hae', 'congratulations', '🎉']
   ] }
 ];
+// 낱말 어려움 점수: 누를 키 수 + 쌍자음·겹받침·겹모음 가산
+HT.wordScore = function (text) {
+  var keys = HT.keysOf(text), score = keys.length, n = text.replace(/ /g, '').length;
+  for (var i = 0; i < text.length; i++) {
+    var c = text.charCodeAt(i);
+    if (c < 0xAC00 || c > 0xD7A3) continue;
+    var k = c - 0xAC00, cho = Math.floor(k / 588), jung = Math.floor((k % 588) / 28), jong = k % 28;
+    if ([1, 4, 8, 10, 13].indexOf(cho) >= 0) score += 2;          // ㄲㄸㅃㅆㅉ
+    if ([9, 10, 11, 14, 15, 16, 19].indexOf(jung) >= 0) score += 2; // ㅘㅙㅚㅝㅞㅟㅢ
+    if ([3, 5, 6, 9, 10, 11, 12, 13, 14, 15, 18].indexOf(jong) >= 0) score += 3; // 겹받침
+  }
+  return score + (n >= 4 ? 3 : 0);
+};
 HT.buildWordIndex = function () {
   HT.WORD_INDEX = {};
   HT.ALL_WORDS = [];
@@ -975,6 +1012,15 @@ HT.buildWordIndex = function () {
       HT.WORD_INDEX[w[0]] = item;
       HT.ALL_WORDS.push(item);
     });
+  });
+  // 점수 순으로 세 묶음: 쉬움 / 보통 / 어려움 (띄어쓰기 있는 말은 보통 이상)
+  var sorted = HT.ALL_WORDS.slice().sort(function (a, b) { return HT.wordScore(a.text) - HT.wordScore(b.text); });
+  var third = Math.ceil(sorted.length / 3);
+  HT.WORD_LEVELS = { easy: [], normal: [], hard: [] };
+  sorted.forEach(function (w, i) {
+    var lv = i < third ? 'easy' : i < third * 2 ? 'normal' : 'hard';
+    if (lv === 'easy' && w.text.indexOf(' ') >= 0) lv = 'normal';
+    w.level = lv; HT.WORD_LEVELS[lv].push(w);
   });
 };
 HT.buildWordIndex();
@@ -1068,6 +1114,8 @@ HT.T = {
   start: ['시작!', 'Start!'], content: ['무엇을 칠까요?', 'What to type?'],
   cJamo: ['자음·모음', 'Letters'], cSyl: ['글자', 'Syllables'], cWord: ['낱말', 'Words'], cSent: ['문장', 'Sentences'],
   speedSel: ['빠르기', 'Speed'], slow: ['느리게', 'Slow'], normal: ['보통', 'Normal'], fast: ['빠르게', 'Fast'],
+  easyDesc: ['짧고 쉬운 낱말', 'Short, easy words'], normalDesc: ['두세 글자 낱말', 'Words with two or three blocks'],
+  hardDesc: ['길거나 까다로운 낱말', 'Long or tricky words'],
   diffSel: ['난이도', 'Difficulty'], easy: ['쉬움', 'Easy'], hard: ['어려움', 'Hard'],
   lengthSel: ['거리', 'Distance'], short: ['짧게', 'Short'], long: ['길게', 'Long'],
   hint: ['힌트', 'Hints'], paused: ['잠깐 쉬어요', 'Paused'], resume: ['계속하기', 'Continue'],
@@ -2173,18 +2221,21 @@ HT.Views.keysMenu = function () {
 // ---- 낱말 주제 목록 ----
 HT.Views.wordsMenu = function () {
   var view = HT.$('#view'), d = HT.Store.data(), missedN = Object.keys(d.missed).filter(function (w) { return HT.WORD_INDEX[w]; }).length;
+  var levels = [['easy', '🌱'], ['normal', '🌿'], ['hard', '🌳']];
   view.innerHTML = '<div class="bar"><button type="button" class="btn small" data-back>← ' + HT.esc(HT.t('back')) + '</button><h2>' + HT.esc(HT.t('words')) + '</h2></div>' +
-    '<div class="cards themes">' +
-    (missedN ? '<button type="button" class="mode-card review" data-theme="review"><span class="glyph">🔁</span><span class="mc-t">' + HT.esc(HT.t('review')) + ' (' + missedN + ')</span><span class="mc-d">' + HT.esc(HT.t('reviewDesc')) + '</span></button>' : '') +
-    HT.THEMES.map(function (th) {
-      return '<button type="button" class="mode-card" data-theme="' + th.id + '"><span class="glyph">' + th.emoji + '</span><span class="mc-t">' +
-        HT.esc(HT.L(th.ko, th.en)) + '</span><span class="mc-d">' + HT.esc(HT.lang === 'ko' ? th.en : th.ko) + '</span>' + HT.starsHTML(d.stars['words-' + th.id] || 0) + '</button>';
-    }).join('') + '</div>';
+    '<div class="cards levels">' + levels.map(function (lv) {
+      var sample = HT.WORD_LEVELS[lv[0]].filter(function (w, i) { return i % 37 === 3; }).slice(0, 3).map(function (w) { return w.emoji + ' ' + w.text; }).join('  ');
+      return '<button type="button" class="mode-card level lv-' + lv[0] + '" data-level="' + lv[0] + '"><span class="glyph">' + lv[1] + '</span>' +
+        '<span class="mc-t">' + HT.esc(HT.t(lv[0])) + '</span><span class="mc-d">' + HT.esc(HT.t(lv[0] + 'Desc')) + '</span>' +
+        '<span class="lv-sample">' + HT.esc(sample) + '</span>' + HT.starsHTML(d.stars['words-' + lv[0]] || 0) + '</button>';
+    }).join('') +
+    (missedN ? '<button type="button" class="mode-card level review" data-level="review"><span class="glyph">🔁</span><span class="mc-t">' + HT.esc(HT.t('review')) + ' (' + missedN + ')</span><span class="mc-d">' + HT.esc(HT.t('reviewDesc')) + '</span></button>' : '') +
+    '</div>';
   view.onclick = function (e) {
     if (e.target.closest('[data-back]')) return HT.go('home');
-    var b = e.target.closest('[data-theme]'); if (!b) return;
+    var b = e.target.closest('[data-level]'); if (!b) return;
     HT.Sfx.click();
-    HT.startWords(b.dataset.theme);
+    HT.startWords(b.dataset.level);
   };
   return function () { view.onclick = null; };
 };
@@ -2221,25 +2272,27 @@ HT.startKeysStage = function (idx) {
   });
 };
 
-HT.startWords = function (themeId) {
-  var C = HT.CONFIG.practice, d = HT.Store.data(), items;
+// 낱말 연습: 난이도(쉬움/보통/어려움) 또는 복습. 주제는 섞여서 나옵니다.
+HT.startWords = function (level) {
+  var C = HT.CONFIG.practice, d = HT.Store.data(), items, title;
   var missed = Object.keys(d.missed).filter(function (w) { return HT.WORD_INDEX[w]; })
     .sort(function (a, b) { return d.missed[b] - d.missed[a]; });
-  var title;
-  if (themeId === 'review') {
+  if (level === 'review') {
     items = missed.slice(0, C.wordsPerRound).map(function (w) { return HT.WORD_INDEX[w]; });
     title = HT.t('review');
   } else {
-    var th = HT.THEMES.filter(function (x) { return x.id === themeId; })[0];
-    title = HT.L(th.ko, th.en);
-    items = HT.shuffle(HT.ALL_WORDS.filter(function (w) { return w.theme === themeId; })).slice(0, C.wordsPerRound);
-    var extra = missed.filter(function (w) { return HT.WORD_INDEX[w].theme !== themeId; }).slice(0, C.reviewInRound);
+    level = HT.pickAllowed(level, ['easy', 'normal', 'hard'], 'easy');
+    title = HT.t('words') + ' · ' + HT.t(level);
+    items = HT.shuffle(HT.WORD_LEVELS[level]).slice(0, C.wordsPerRound);
+    var extra = missed.filter(function (w) { return HT.WORD_INDEX[w].level === level && items.indexOf(HT.WORD_INDEX[w]) < 0; }).slice(0, C.reviewInRound);
     extra.forEach(function (w, i) { var at = items.length - 1 - i; if (at >= 0) items[at] = Object.assign({ review: true }, HT.WORD_INDEX[w]); });
     items = HT.shuffle(items);
   }
   HT.go('practice', {
-    kind: 'words', title: title, starKey: themeId === 'review' ? null : 'words-' + themeId, items: items,
-    again: function () { HT.startWords(themeId); }, next: null, menu: 'wordsMenu'
+    kind: 'words', title: title, starKey: level === 'review' ? null : 'words-' + level, items: items,
+    again: function () { HT.startWords(level); },
+    next: level === 'easy' ? function () { HT.startWords('normal'); } : level === 'normal' ? function () { HT.startWords('hard'); } : null,
+    menu: 'wordsMenu'
   });
 };
 

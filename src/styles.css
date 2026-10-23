@@ -614,3 +614,27 @@ h2, h3, .logo, .btn, .lbl, .bubble, .mc-t, .stat b, .meter b, .hud-i b, .seg-b, 
 .opt-row { display: flex; flex-direction: column; align-items: center; }
 .pc .opt-row { flex-direction: row; justify-content: center; gap: 18px; flex-wrap: nowrap; }
 .pc .ov-box { width: min(880px, 100%); }
+
+/* 낱말 연습: 난이도 3개 */
+.cards.levels { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.mode-card.level { align-items: center; text-align: center; padding: 26px 20px; }
+.mode-card.level .glyph { font-size: 44px; min-width: 84px; height: 84px; border-radius: 28px; }
+.mode-card.level .mc-t { font-size: 26px; }
+.lv-sample { margin: 8px 0 6px; font-weight: 700; font-size: 17px; color: var(--ink); background: var(--sand); border-radius: 999px; padding: 4px 14px; }
+.cards > .mode-card.lv-easy .glyph { background: #C8F0B5; }
+.cards > .mode-card.lv-normal .glyph { background: #FFE286; }
+.cards > .mode-card.lv-hard .glyph { background: #FFC2B8; }
+.cards > .mode-card.review .glyph { background: #B5E6FF; }
+.mode-card.review { grid-column: 1 / -1; flex-direction: row; justify-content: center; gap: 16px; padding: 14px 20px; }
+.mode-card.review .glyph { min-width: 56px; height: 56px; font-size: 28px; margin: 0; }
+.pc .cards.levels { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; margin-top: 20px; }
+.pc .mode-card.level { min-height: 400px; justify-content: center; border-radius: 36px; }
+.pc .mode-card.level .glyph { font-size: 72px; min-width: 140px; height: 140px; border-radius: 44px; margin-bottom: 18px; }
+.pc .mode-card.level .mc-t { font-size: 40px; }
+.pc .mode-card.level .mc-d { font-size: 18px; }
+.pc .lv-sample { font-size: 22px; padding: 6px 18px; margin: 14px 0 10px; }
+.pc .mode-card.level .stars .st { font-size: 28px; }
+.pc .mode-card.review { min-height: 0; flex-direction: row; padding: 16px 24px; }
+.pc .mode-card.review .glyph { min-width: 64px; height: 64px; font-size: 32px; margin: 0; }
+.pc .mode-card.review .mc-t { font-size: 24px; }
+@media (max-width: 600px) { .cards.levels { grid-template-columns: 1fr; } }

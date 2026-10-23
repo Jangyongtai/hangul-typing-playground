@@ -111,18 +111,21 @@ HT.Views.keysMenu = function () {
 // ---- 낱말 주제 목록 ----
 HT.Views.wordsMenu = function () {
   var view = HT.$('#view'), d = HT.Store.data(), missedN = Object.keys(d.missed).filter(function (w) { return HT.WORD_INDEX[w]; }).length;
+  var levels = [['easy', '🌱'], ['normal', '🌿'], ['hard', '🌳']];
   view.innerHTML = '<div class="bar"><button type="button" class="btn small" data-back>← ' + HT.esc(HT.t('back')) + '</button><h2>' + HT.esc(HT.t('words')) + '</h2></div>' +
-    '<div class="cards themes">' +
-    (missedN ? '<button type="button" class="mode-card review" data-theme="review"><span class="glyph">🔁</span><span class="mc-t">' + HT.esc(HT.t('review')) + ' (' + missedN + ')</span><span class="mc-d">' + HT.esc(HT.t('reviewDesc')) + '</span></button>' : '') +
-    HT.THEMES.map(function (th) {
-      return '<button type="button" class="mode-card" data-theme="' + th.id + '"><span class="glyph">' + th.emoji + '</span><span class="mc-t">' +
-        HT.esc(HT.L(th.ko, th.en)) + '</span><span class="mc-d">' + HT.esc(HT.lang === 'ko' ? th.en : th.ko) + '</span>' + HT.starsHTML(d.stars['words-' + th.id] || 0) + '</button>';
-    }).join('') + '</div>';
+    '<div class="cards levels">' + levels.map(function (lv) {
+      var sample = HT.WORD_LEVELS[lv[0]].filter(function (w, i) { return i % 37 === 3; }).slice(0, 3).map(function (w) { return w.emoji + ' ' + w.text; }).join('  ');
+      return '<button type="button" class="mode-card level lv-' + lv[0] + '" data-level="' + lv[0] + '"><span class="glyph">' + lv[1] + '</span>' +
+        '<span class="mc-t">' + HT.esc(HT.t(lv[0])) + '</span><span class="mc-d">' + HT.esc(HT.t(lv[0] + 'Desc')) + '</span>' +
+        '<span class="lv-sample">' + HT.esc(sample) + '</span>' + HT.starsHTML(d.stars['words-' + lv[0]] || 0) + '</button>';
+    }).join('') +
+    (missedN ? '<button type="button" class="mode-card level review" data-level="review"><span class="glyph">🔁</span><span class="mc-t">' + HT.esc(HT.t('review')) + ' (' + missedN + ')</span><span class="mc-d">' + HT.esc(HT.t('reviewDesc')) + '</span></button>' : '') +
+    '</div>';
   view.onclick = function (e) {
     if (e.target.closest('[data-back]')) return HT.go('home');
-    var b = e.target.closest('[data-theme]'); if (!b) return;
+    var b = e.target.closest('[data-level]'); if (!b) return;
     HT.Sfx.click();
-    HT.startWords(b.dataset.theme);
+    HT.startWords(b.dataset.level);
   };
   return function () { view.onclick = null; };
 };
@@ -159,25 +162,27 @@ HT.startKeysStage = function (idx) {
   });
 };
 
-HT.startWords = function (themeId) {
-  var C = HT.CONFIG.practice, d = HT.Store.data(), items;
+// 낱말 연습: 난이도(쉬움/보통/어려움) 또는 복습. 주제는 섞여서 나옵니다.
+HT.startWords = function (level) {
+  var C = HT.CONFIG.practice, d = HT.Store.data(), items, title;
   var missed = Object.keys(d.missed).filter(function (w) { return HT.WORD_INDEX[w]; })
     .sort(function (a, b) { return d.missed[b] - d.missed[a]; });
-  var title;
-  if (themeId === 'review') {
+  if (level === 'review') {
     items = missed.slice(0, C.wordsPerRound).map(function (w) { return HT.WORD_INDEX[w]; });
     title = HT.t('review');
   } else {
-    var th = HT.THEMES.filter(function (x) { return x.id === themeId; })[0];
-    title = HT.L(th.ko, th.en);
-    items = HT.shuffle(HT.ALL_WORDS.filter(function (w) { return w.theme === themeId; })).slice(0, C.wordsPerRound);
-    var extra = missed.filter(function (w) { return HT.WORD_INDEX[w].theme !== themeId; }).slice(0, C.reviewInRound);
+    level = HT.pickAllowed(level, ['easy', 'normal', 'hard'], 'easy');
+    title = HT.t('words') + ' · ' + HT.t(level);
+    items = HT.shuffle(HT.WORD_LEVELS[level]).slice(0, C.wordsPerRound);
+    var extra = missed.filter(function (w) { return HT.WORD_INDEX[w].level === level && items.indexOf(HT.WORD_INDEX[w]) < 0; }).slice(0, C.reviewInRound);
     extra.forEach(function (w, i) { var at = items.length - 1 - i; if (at >= 0) items[at] = Object.assign({ review: true }, HT.WORD_INDEX[w]); });
     items = HT.shuffle(items);
   }
   HT.go('practice', {
-    kind: 'words', title: title, starKey: themeId === 'review' ? null : 'words-' + themeId, items: items,
-    again: function () { HT.startWords(themeId); }, next: null, menu: 'wordsMenu'
+    kind: 'words', title: title, starKey: level === 'review' ? null : 'words-' + level, items: items,
+    again: function () { HT.startWords(level); },
+    next: level === 'easy' ? function () { HT.startWords('normal'); } : level === 'normal' ? function () { HT.startWords('hard'); } : null,
+    menu: 'wordsMenu'
   });
 };
 

@@ -4,7 +4,7 @@ var HT = globalThis.HT = globalThis.HT || {};
 
 HT.DEFAULT_CONFIG = {
   practice: {
-    keysPerStage: 15,        // 자리 익히기 한 단계 문제 수
+    keysPerStage: 10,        // 자리 익히기 한 단계 문제 수
     reviewRatio: 0.3,        // 이전 단계 복습 비율
     wordsPerRound: 8,        // 낱말 연습 한 판 낱말 수
     reviewInRound: 2,        // 낱말 연습에 섞어 넣을 틀렸던 낱말 수

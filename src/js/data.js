@@ -120,6 +120,19 @@ HT.THEMES = [
     ['축하해', 'chu-ka-hae', 'congratulations', '🎉']
   ] }
 ];
+// 낱말 어려움 점수: 누를 키 수 + 쌍자음·겹받침·겹모음 가산
+HT.wordScore = function (text) {
+  var keys = HT.keysOf(text), score = keys.length, n = text.replace(/ /g, '').length;
+  for (var i = 0; i < text.length; i++) {
+    var c = text.charCodeAt(i);
+    if (c < 0xAC00 || c > 0xD7A3) continue;
+    var k = c - 0xAC00, cho = Math.floor(k / 588), jung = Math.floor((k % 588) / 28), jong = k % 28;
+    if ([1, 4, 8, 10, 13].indexOf(cho) >= 0) score += 2;          // ㄲㄸㅃㅆㅉ
+    if ([9, 10, 11, 14, 15, 16, 19].indexOf(jung) >= 0) score += 2; // ㅘㅙㅚㅝㅞㅟㅢ
+    if ([3, 5, 6, 9, 10, 11, 12, 13, 14, 15, 18].indexOf(jong) >= 0) score += 3; // 겹받침
+  }
+  return score + (n >= 4 ? 3 : 0);
+};
 HT.buildWordIndex = function () {
   HT.WORD_INDEX = {};
   HT.ALL_WORDS = [];
@@ -129,6 +142,15 @@ HT.buildWordIndex = function () {
       HT.WORD_INDEX[w[0]] = item;
       HT.ALL_WORDS.push(item);
     });
+  });
+  // 점수 순으로 세 묶음: 쉬움 / 보통 / 어려움 (띄어쓰기 있는 말은 보통 이상)
+  var sorted = HT.ALL_WORDS.slice().sort(function (a, b) { return HT.wordScore(a.text) - HT.wordScore(b.text); });
+  var third = Math.ceil(sorted.length / 3);
+  HT.WORD_LEVELS = { easy: [], normal: [], hard: [] };
+  sorted.forEach(function (w, i) {
+    var lv = i < third ? 'easy' : i < third * 2 ? 'normal' : 'hard';
+    if (lv === 'easy' && w.text.indexOf(' ') >= 0) lv = 'normal';
+    w.level = lv; HT.WORD_LEVELS[lv].push(w);
   });
 };
 HT.buildWordIndex();
@@ -222,6 +244,8 @@ HT.T = {
   start: ['시작!', 'Start!'], content: ['무엇을 칠까요?', 'What to type?'],
   cJamo: ['자음·모음', 'Letters'], cSyl: ['글자', 'Syllables'], cWord: ['낱말', 'Words'], cSent: ['문장', 'Sentences'],
   speedSel: ['빠르기', 'Speed'], slow: ['느리게', 'Slow'], normal: ['보통', 'Normal'], fast: ['빠르게', 'Fast'],
+  easyDesc: ['짧고 쉬운 낱말', 'Short, easy words'], normalDesc: ['두세 글자 낱말', 'Words with two or three blocks'],
+  hardDesc: ['길거나 까다로운 낱말', 'Long or tricky words'],
   diffSel: ['난이도', 'Difficulty'], easy: ['쉬움', 'Easy'], hard: ['어려움', 'Hard'],
   lengthSel: ['거리', 'Distance'], short: ['짧게', 'Short'], long: ['길게', 'Long'],
   hint: ['힌트', 'Hints'], paused: ['잠깐 쉬어요', 'Paused'], resume: ['계속하기', 'Continue'],
